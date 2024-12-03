@@ -2,7 +2,7 @@ import Link from 'next/link';
 import LogoUNRN from './logo-UNRN';
 import NavLinks from './nav-links';
 import ToggleTheme from './toggle-theme';
-import SignoutButton from './signout-button';
+import SignoutButton from './user/signout-button';
 import { auth } from '@/auth';
 
 const Header = async () => {

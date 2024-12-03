@@ -3,9 +3,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 import { ThemeProvider } from '@/context/theme-provider';
 import { NextUIProviderContext } from '@/context/nextui-provider';
-import Header from './components/header';
-import Footer from './components/footer';
-// import { Toaster } from 'sonner';
+import { Toaster } from 'sonner';
 
 const fabrikat = localFont({
   src: [
@@ -115,7 +113,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <ThemeProvider>
-        {/* <Toaster
+        <Toaster
           closeButton
           toastOptions={{
             classNames: {
@@ -132,7 +130,7 @@ export default function RootLayout({
                 'bg-lightPaper dark:bg-darkPaper text-foreground dark:text-[#FCF6F5] border-darkPaper dark:border-lightPaper',
             },
           }}
-        /> */}
+        />
         <NextUIProviderContext>
           <body
             className={`${fabrikat.variable} font-fabrikat antialiased`}
@@ -145,9 +143,7 @@ export default function RootLayout({
               margin: '0 auto',
             }}
           >
-            <Header />
             {children}
-            <Footer />
           </body>
         </NextUIProviderContext>
       </ThemeProvider>
