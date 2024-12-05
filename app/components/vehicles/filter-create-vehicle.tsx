@@ -1,10 +1,11 @@
 'use client';
-import { Button } from '@nextui-org/react';
+import { Button, CardFooter } from '@nextui-org/react';
 import Search from '@/app/components/search';
 import { useState } from 'react';
 // import { CreateUserForm } from './create-form';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardHeader, CardBody, Image } from '@nextui-org/react';
+import Link from 'next/link';
 
 const FilterCreateVehicle = ({
   searchParams,
@@ -25,9 +26,9 @@ const FilterCreateVehicle = ({
       model: 'Corolla',
       year: 1999,
       color: 'Blanco',
-      licensePlate: 'QWERTY',
+      licensePlate: 'AA123BB',
       photo:
-        'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.sAELQnYrxpt3JD5Z4MWR0wHaFP%26pid%3DApi&f=1&ipt=2a02259d1e652887280dd7b4fd49bb7e1722b02bc413ce115171519d542f6832&ipo=images',
+        'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.motortrend.com%2Fuploads%2Fsites%2F10%2F2015%2F11%2F2014-toyota-corolla-l-at-sedan-angular-front.png&f=1&nofb=1&ipt=2b8e3cdf150823309a5c928c58f046c7fb8708c42c9a8b120868b498bc639861&ipo=images',
     },
     {
       label: 'Ford Focus',
@@ -35,10 +36,10 @@ const FilterCreateVehicle = ({
       make: 'Ford',
       model: 'Focus',
       year: 2015,
-      color: 'Amarillo',
-      licensePlate: 'ASDFGH',
+      color: 'Azul',
+      licensePlate: 'BB456CC',
       photo:
-        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.hdcarwallpapers.com%2Fwalls%2F2015_ford_focus_st-HD.jpg&f=1&nofb=1&ipt=d0fc4923782b20f9e1998e53d4a676b888a7046ff82c7e2c47bd54fcfbeab8a8&ipo=images',
+        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fi.imgur.com%2FArycCWP.png&f=1&nofb=1&ipt=1861cabb3d79ba69e2c31b12ea99d80785f4d8b95676c7e371f4d493d276bb25&ipo=images',
     },
     {
       label: 'Honda Civic',
@@ -47,7 +48,7 @@ const FilterCreateVehicle = ({
       model: 'Civic',
       year: 2020,
       color: 'Naranja',
-      licensePlate: 'ZXCVBN',
+      licensePlate: 'CC789DD',
       photo:
         'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fst.automobilemag.com%2Fuploads%2Fsites%2F10%2F2015%2F11%2F2014-honda-civic-si-sedan-angular-front.png&f=1&nofb=1&ipt=e31439d1dfd7060e97ec5b9d2b068a9593f58231a8a5dba75c67fb7337511993&ipo=images',
     },
@@ -58,9 +59,9 @@ const FilterCreateVehicle = ({
       model: 'Cronos',
       year: 2018,
       color: 'Gris',
-      licensePlate: 'POIUYT',
+      licensePlate: 'DD321EE',
       photo:
-        'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.roptt_eF3iEq1bDpBPAPEQHaEv%26pid%3DApi&f=1&ipt=f32bb9007ff10da25a5dfc251fd67e0ae2475f06d88b06eb2795957d6d70de8b&ipo=images',
+        'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcronos.fiat.com.ar%2Fassets%2Fimages%2Fimg-version-cronos-drive-13-mt-2.png&f=1&nofb=1&ipt=92d4b07357f4b4273e68015213bea393e99803cfdcb34fedc301a92bc2d99509&ipo=images',
     },
     {
       label: 'Toyota Hilux',
@@ -69,9 +70,9 @@ const FilterCreateVehicle = ({
       model: 'Hilux',
       year: 2022,
       color: 'Rojo',
-      licensePlate: 'LKJHGF',
+      licensePlate: 'EE654FF',
       photo:
-        'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.wS-m-rGQ8InF7aSSosCJoAHaEK%26pid%3DApi&f=1&ipt=0d8cd709a0511220a7ebb20fee127134c61aac41262b3b5ddd9abaa2f09a8536&ipo=images',
+        'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.pngmart.com%2Ffiles%2F22%2FToyota-Hilux-PNG-File.png&f=1&nofb=1&ipt=82cd62675f3b3394f9254901badc4e3686e8f5f3065a1824a2f45d79ec0af99b&ipo=images',
     },
   ];
   return (
@@ -135,7 +136,7 @@ const FilterCreateVehicle = ({
               <small className="text-default-500">{vehicle.model}</small>
               <h4 className="text-large font-bold">{vehicle.licensePlate}</h4>
             </CardHeader>
-            <CardBody className="overflow-visible py-2">
+            <CardBody className="items-center justify-center overflow-visible py-2">
               <Image
                 alt="Card background"
                 className="rounded-xl object-cover"
@@ -143,9 +144,18 @@ const FilterCreateVehicle = ({
                 width={270}
               />
             </CardBody>
+            <CardFooter className="flex justify-between px-4 pt-2">
+              <Link href={`/dashboard/vehicles/${vehicle?.vin}`}>
+                <Button color="success" variant="light" size="sm">
+                  Ver detalles
+                </Button>
+              </Link>
+              <Button color="danger" variant="light">
+                Eliminar
+              </Button>
+            </CardFooter>
           </Card>
         ))}
-        s
       </div>
     </>
   );

@@ -77,14 +77,14 @@ export default function InspectionsList({ searchParams }: InspectionsListProps) 
         ladoPasajero: '/api/placeholder/800/600',
         trasera: '/api/placeholder/800/600'
       },
-      alertasTablero: ['Presión de Neumáticos', 'ABS', 'Nivel de Aceite Bajo'],
+      alertasTablero: ['Presión de neumáticos', 'ABS', 'Nivel de aceite bajo'],
       fluidos: {
         aceiteMotor: 'OK',
         transmision: 'OK',
         diferencial: 'OK',
         refrigerante: 'OK',
         frenos: 'Lleno',
-        direccionHidraulica: 'Requiere Atención',
+        direccionHidraulica: 'Requiere atención',
         limpiaparabrisas: 'Lleno'
       },
       mangueras: {
@@ -93,18 +93,18 @@ export default function InspectionsList({ searchParams }: InspectionsListProps) 
       },
       correas: {
         serpentina: 'OK',
-        alternador: 'Atención Futura'
+        alternador: 'Atención futura'
       },
       filtros: {
-        aire: 'Requiere Atención',
+        aire: 'Requiere atención',
         combustible: 'OK',
         aceite: 'OK'
       },
       neumaticos: {
         delanteroDerecho: 'OK',
         delanteroIzquierdo: 'OK',
-        traseroDerecho: 'Atención Futura',
-        traseroIzquierdo: 'Atención Futura'
+        traseroDerecho: 'Atención futura',
+        traseroIzquierdo: 'Atención futura'
       },
       seguridad: {
         frenoEmergencia: 'OK',
@@ -155,7 +155,7 @@ export default function InspectionsList({ searchParams }: InspectionsListProps) 
             }
             className="text-black"
           >
-            Nueva Inspección
+            Nueva inspección
           </Button>
         </div>
       </div>

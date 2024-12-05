@@ -7,7 +7,7 @@ import clsx from 'clsx';
 import {
   TruckIcon,
   HomeIcon,
-  MagnifyingGlassIcon,
+  WrenchScrewdriverIcon
 } from '@heroicons/react/24/outline';
 
 const links = [
@@ -20,7 +20,7 @@ const links = [
   {
     name: 'Inspecciones',
     href: '/dashboard/inspections',
-    icon: MagnifyingGlassIcon,
+    icon: WrenchScrewdriverIcon,
   },
 ];
 

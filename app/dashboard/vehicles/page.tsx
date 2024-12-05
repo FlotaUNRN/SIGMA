@@ -34,7 +34,7 @@ export default async function Page({
           },
         }}
       />
-      <h1 className="text-2xl">Vehículos</h1>
+      <h1 className="text-2xl mb-6">Vehículos</h1>
       <FilterCreateVehicle searchParams={searchParams} />
     </div>
   );
