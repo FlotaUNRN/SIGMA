@@ -55,9 +55,15 @@ interface Inspection {
   estado: string;
 }
 
-export default function InspectionsList() {
+interface InspectionsListProps {
+    searchParams?: {
+      query?: string;
+      page?: string;
+    };
+  }
+export default function InspectionsList({ searchParams }: InspectionsListProps) {
   const [activeForm, setActiveForm] = useState(false);
-  
+  console.log('Search params:', searchParams);
   const inspections: Inspection[] = [
     {
       id: '1',

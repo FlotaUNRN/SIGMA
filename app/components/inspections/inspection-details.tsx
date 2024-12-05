@@ -66,7 +66,8 @@ interface InspectionData {
   notas: string;
 }
 
-export default function InspectionDetails() {
+export default function InspectionDetails({ id }: { id: string }) {
+  console.log('Loading inspection:', id);
   const [isEditing, setIsEditing] = useState(false);
   const [inspectionData, setInspectionData] = useState<InspectionData>({
     vehiculo: 'Subaru Forrester',
