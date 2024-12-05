@@ -4,8 +4,6 @@ import { useState } from 'react';
 import { Card, CardBody, CardHeader, Image, Button, Input, Select, SelectItem } from '@nextui-org/react';
 import Link from 'next/link';
 
-type StatusType = 'OK' | 'Requiere Atención' | 'Atención Futura' | 'Lleno';
-
 interface ImagenesData {
   frente: string;
   ladoConductor: string;
@@ -126,19 +124,25 @@ export default function InspectionDetails() {
     value: string
   ) => {
     setInspectionData((prev) => {
-      if (section === 'vehiculo' || section === 'referencia' || 
-          section === 'fecha' || section === 'odometro' || 
-          section === 'notas' || section === 'alertasTablero') {
+      if (['vehiculo', 'referencia', 'fecha', 'odometro', 'notas'].includes(section)) {
         return {
           ...prev,
           [section]: value
         };
       }
 
+      if (section === 'alertasTablero') {
+        return {
+          ...prev,
+          alertasTablero: [...prev.alertasTablero, value]
+        };
+      }
+
+      const sectionData = prev[section] as unknown as Record<string, unknown>;
       return {
         ...prev,
         [section]: {
-          ...(prev[section] as Record<string, unknown>),
+          ...sectionData,
           [field]: value
         }
       };
@@ -181,7 +185,6 @@ export default function InspectionDetails() {
       </div>
     );
   };
-
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
       <div className="flex justify-between items-center mb-8">
@@ -201,7 +204,6 @@ export default function InspectionDetails() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Información Básica */}
         <Card className="shadow-md">
           <CardHeader className="border-b border-divider">
             <h3 className="text-lg font-semibold">Información Básica</h3>
@@ -249,7 +251,6 @@ export default function InspectionDetails() {
           </CardBody>
         </Card>
 
-        {/* Imágenes */}
         <Card className="shadow-md">
           <CardHeader className="border-b border-divider">
             <h3 className="text-lg font-semibold">Imágenes del Vehículo</h3>
@@ -269,7 +270,6 @@ export default function InspectionDetails() {
           </CardBody>
         </Card>
 
-        {/* Fluidos */}
         <Card className="shadow-md">
           <CardHeader className="border-b border-divider">
             <h3 className="text-lg font-semibold">Fluidos</h3>
@@ -286,7 +286,6 @@ export default function InspectionDetails() {
           </CardBody>
         </Card>
 
-        {/* Neumáticos */}
         <Card className="shadow-md">
           <CardHeader className="border-b border-divider">
             <h3 className="text-lg font-semibold">Neumáticos</h3>
@@ -303,7 +302,6 @@ export default function InspectionDetails() {
           </CardBody>
         </Card>
 
-        {/* Filtros */}
         <Card className="shadow-md">
           <CardHeader className="border-b border-divider">
             <h3 className="text-lg font-semibold">Filtros</h3>
@@ -320,7 +318,6 @@ export default function InspectionDetails() {
           </CardBody>
         </Card>
 
-        {/* Seguridad */}
         <Card className="shadow-md">
           <CardHeader className="border-b border-divider">
             <h3 className="text-lg font-semibold">Seguridad</h3>
@@ -337,7 +334,6 @@ export default function InspectionDetails() {
           </CardBody>
         </Card>
 
-        {/* Mangueras y Correas */}
         <Card className="shadow-md md:col-span-2">
           <CardHeader className="border-b border-divider">
             <h3 className="text-lg font-semibold">Mangueras y Correas</h3>
@@ -370,7 +366,6 @@ export default function InspectionDetails() {
           </CardBody>
         </Card>
 
-        {/* Notas */}
         <Card className="shadow-md md:col-span-2">
           <CardHeader className="border-b border-divider">
             <h3 className="text-lg font-semibold">Notas</h3>
