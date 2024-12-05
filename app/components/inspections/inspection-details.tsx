@@ -4,35 +4,69 @@ import { useState } from 'react';
 import { Card, CardBody, CardHeader, Image, Button, Input, Select, SelectItem } from '@nextui-org/react';
 import Link from 'next/link';
 
+type StatusType = 'OK' | 'Requiere Atención' | 'Atención Futura' | 'Lleno';
+
+interface ImagenesData {
+  frente: string;
+  ladoConductor: string;
+  ladoPasajero: string;
+  trasera: string;
+}
+
+interface FluidosData {
+  aceiteMotor: string;
+  transmision: string;
+  diferencial: string;
+  refrigerante: string;
+  frenos: string;
+  direccionHidraulica: string;
+  limpiaparabrisas: string;
+}
+
+interface ManguerasData {
+  direccion: string;
+  calefaccion: string;
+}
+
+interface CorreasData {
+  serpentina: string;
+  alternador: string;
+}
+
+interface FiltrosData {
+  aire: string;
+  combustible: string;
+  aceite: string;
+}
+
+interface NeumaticosData {
+  delanteroIzquierdo: string;
+  traseroIzquierdo: string;
+  delanteroDerecho: string;
+  traseroDerecho: string;
+}
+
+interface SeguridadData {
+  frenoEmergencia: string;
+  limpiaparabrisasDelantero: string;
+  limpiaparabrisasTrasero: string;
+}
+
 interface InspectionData {
-    vehiculo: string;
-    referencia: string;
-    fecha: string;
-    odometro: string;
-    imagenes: {
-      [key: string]: string;
-    };
-    alertasTablero: string[];
-    fluidos: {
-      [key: string]: string;
-    };
-    mangueras: {
-      [key: string]: string;
-    };
-    correas: {
-      [key: string]: string;
-    };
-    filtros: {
-      [key: string]: string;
-    };
-    neumaticos: {
-      [key: string]: string;
-    };
-    seguridad: {
-      [key: string]: string;
-    };
-    notas: string;
-  }
+  vehiculo: string;
+  referencia: string;
+  fecha: string;
+  odometro: string;
+  imagenes: ImagenesData;
+  alertasTablero: string[];
+  fluidos: FluidosData;
+  mangueras: ManguerasData;
+  correas: CorreasData;
+  filtros: FiltrosData;
+  neumaticos: NeumaticosData;
+  seguridad: SeguridadData;
+  notas: string;
+}
 
 export default function InspectionDetails() {
   const [isEditing, setIsEditing] = useState(false);
@@ -86,14 +120,29 @@ export default function InspectionDetails() {
 
   const statusOptions = ['OK', 'Requiere Atención', 'Atención Futura', 'Lleno'];
 
-  const handleInputChange = (section: keyof InspectionData, field: string, value: string) => {
-    setInspectionData(prev => ({
-      ...prev,
-      [section]: {
-        ...(typeof prev[section] === 'object' ? prev[section] : {}),
-        [field]: value
+  const handleInputChange = (
+    section: keyof InspectionData,
+    field: string,
+    value: string
+  ) => {
+    setInspectionData((prev) => {
+      if (section === 'vehiculo' || section === 'referencia' || 
+          section === 'fecha' || section === 'odometro' || 
+          section === 'notas' || section === 'alertasTablero') {
+        return {
+          ...prev,
+          [section]: value
+        };
       }
-    }));
+
+      return {
+        ...prev,
+        [section]: {
+          ...(prev[section] as Record<string, unknown>),
+          [field]: value
+        }
+      };
+    });
   };
 
   const getStatusColor = (status: string) => {
@@ -152,6 +201,7 @@ export default function InspectionDetails() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Información Básica */}
         <Card className="shadow-md">
           <CardHeader className="border-b border-divider">
             <h3 className="text-lg font-semibold">Información Básica</h3>
@@ -165,7 +215,7 @@ export default function InspectionDetails() {
                     value={inspectionData.vehiculo}
                     className="w-full"
                     size="lg"
-                    onChange={(e) => setInspectionData({...inspectionData, vehiculo: e.target.value})}
+                    onChange={(e) => handleInputChange('vehiculo', '', e.target.value)}
                   />
                 ) : (
                   <div className="w-full p-3 rounded-md bg-default-100 min-h-[44px] flex items-center">
@@ -181,7 +231,7 @@ export default function InspectionDetails() {
                     className="w-full"
                     size="lg"
                     endContent={<span className="text-default-400">km</span>}
-                    onChange={(e) => setInspectionData({...inspectionData, odometro: e.target.value})}
+                    onChange={(e) => handleInputChange('odometro', '', e.target.value)}
                   />
                 ) : (
                   <div className="w-full p-3 rounded-md bg-default-100 min-h-[44px] flex items-center">
@@ -199,6 +249,7 @@ export default function InspectionDetails() {
           </CardBody>
         </Card>
 
+        {/* Imágenes */}
         <Card className="shadow-md">
           <CardHeader className="border-b border-divider">
             <h3 className="text-lg font-semibold">Imágenes del Vehículo</h3>
@@ -218,6 +269,7 @@ export default function InspectionDetails() {
           </CardBody>
         </Card>
 
+        {/* Fluidos */}
         <Card className="shadow-md">
           <CardHeader className="border-b border-divider">
             <h3 className="text-lg font-semibold">Fluidos</h3>
@@ -234,6 +286,7 @@ export default function InspectionDetails() {
           </CardBody>
         </Card>
 
+        {/* Neumáticos */}
         <Card className="shadow-md">
           <CardHeader className="border-b border-divider">
             <h3 className="text-lg font-semibold">Neumáticos</h3>
@@ -250,6 +303,7 @@ export default function InspectionDetails() {
           </CardBody>
         </Card>
 
+        {/* Filtros */}
         <Card className="shadow-md">
           <CardHeader className="border-b border-divider">
             <h3 className="text-lg font-semibold">Filtros</h3>
@@ -266,6 +320,7 @@ export default function InspectionDetails() {
           </CardBody>
         </Card>
 
+        {/* Seguridad */}
         <Card className="shadow-md">
           <CardHeader className="border-b border-divider">
             <h3 className="text-lg font-semibold">Seguridad</h3>
@@ -282,6 +337,7 @@ export default function InspectionDetails() {
           </CardBody>
         </Card>
 
+        {/* Mangueras y Correas */}
         <Card className="shadow-md md:col-span-2">
           <CardHeader className="border-b border-divider">
             <h3 className="text-lg font-semibold">Mangueras y Correas</h3>
@@ -314,6 +370,7 @@ export default function InspectionDetails() {
           </CardBody>
         </Card>
 
+        {/* Notas */}
         <Card className="shadow-md md:col-span-2">
           <CardHeader className="border-b border-divider">
             <h3 className="text-lg font-semibold">Notas</h3>
@@ -323,7 +380,7 @@ export default function InspectionDetails() {
               <Input
                 value={inspectionData.notas}
                 className="w-full"
-                onChange={(e) => setInspectionData({...inspectionData, notas: e.target.value})}
+                onChange={(e) => handleInputChange('notas', '', e.target.value)}
               />
             ) : (
               <p className="px-3 py-1.5 rounded bg-default-100">{inspectionData.notas}</p>
@@ -334,4 +391,3 @@ export default function InspectionDetails() {
     </div>
   );
 }
-
