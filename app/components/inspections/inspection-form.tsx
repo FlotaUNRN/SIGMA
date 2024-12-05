@@ -1,29 +1,42 @@
+'use client';
+
 import { useState } from 'react';
 import { Button, Input, Select, SelectItem, Textarea } from '@nextui-org/react';
 
+interface Fluid {
+  [key: string]: string;
+}
+
+interface InspectionData {
+  odometer: string;
+  fluids: Fluid;
+  notes: string;
+}
+
 interface InspectionFormProps {
-  initialData?: any;
-  onSubmit: (data: any) => void;
+  initialData?: Partial<InspectionData>;
+  onSubmit: (data: InspectionData) => void;
   onCancel: () => void;
 }
 
+const STATUS_OPTIONS = ['OK', 'Requires Attention', 'Future Attention', 'Filled'] as const;
+
 export default function InspectionForm({ initialData, onSubmit, onCancel }: InspectionFormProps) {
-  const [formData, setFormData] = useState(initialData || {});
+  const [formData, setFormData] = useState<InspectionData>({
+    odometer: initialData?.odometer || '',
+    fluids: initialData?.fluids || {},
+    notes: initialData?.notes || '',
+  });
 
-  const statusOptions = ['OK', 'Requires Attention', 'Future Attention', 'Filled'];
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit(formData);
   };
 
-  const updateFormData = (section: string, field: string, value: string) => {
-    setFormData(prev => ({
+  const updateFormData = (section: keyof InspectionData, field: string, value: string) => {
+    setFormData((prev) => ({
       ...prev,
-      [section]: {
-        ...prev[section],
-        [field]: value
-      }
+      [section]: section === 'fluids' ? { ...prev[section], [field]: value } : value,
     }));
   };
 
@@ -34,19 +47,19 @@ export default function InspectionForm({ initialData, onSubmit, onCancel }: Insp
           label="Odometer"
           type="number"
           value={formData.odometer}
-          onChange={(e) => setFormData({ ...formData, odometer: e.target.value })}
+          onChange={(e) => updateFormData('odometer', '', e.target.value)}
         />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {Object.entries(formData.fluids || {}).map(([key, value]) => (
+        {Object.entries(formData.fluids).map(([key, value]) => (
           <Select
             key={key}
             label={key.replace(/([A-Z])/g, ' $1').trim()}
-            value={value as string}
+            selectedKeys={[value]}
             onChange={(e) => updateFormData('fluids', key, e.target.value)}
           >
-            {statusOptions.map((option) => (
+            {STATUS_OPTIONS.map((option) => (
               <SelectItem key={option} value={option}>
                 {option}
               </SelectItem>
@@ -58,7 +71,7 @@ export default function InspectionForm({ initialData, onSubmit, onCancel }: Insp
       <Textarea
         label="Notes"
         value={formData.notes}
-        onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+        onChange={(e) => updateFormData('notes', '', e.target.value)}
       />
 
       <div className="flex justify-end gap-2">
@@ -72,3 +85,4 @@ export default function InspectionForm({ initialData, onSubmit, onCancel }: Insp
     </form>
   );
 }
+

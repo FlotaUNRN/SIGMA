@@ -4,9 +4,25 @@ import { useState } from 'react';
 import { Card, CardBody, CardHeader, Image, Button, Input, Select, SelectItem } from '@nextui-org/react';
 import Link from 'next/link';
 
-export default function InspectionDetails({ id }: { id: string }) {
+interface InspectionData {
+  vehiculo: string;
+  referencia: string;
+  fecha: string;
+  odometro: string;
+  imagenes: Record<string, string>;
+  alertasTablero: string[];
+  fluidos: Record<string, string>;
+  mangueras: Record<string, string>;
+  correas: Record<string, string>;
+  filtros: Record<string, string>;
+  neumaticos: Record<string, string>;
+  seguridad: Record<string, string>;
+  notas: string;
+}
+
+export default function InspectionDetails() {
   const [isEditing, setIsEditing] = useState(false);
-  const [inspectionData, setInspectionData] = useState({
+  const [inspectionData, setInspectionData] = useState<InspectionData>({
     vehiculo: 'Subaru Forrester',
     referencia: 'VEH-001',
     fecha: '1/1/2021 20:04:10',
@@ -56,35 +72,35 @@ export default function InspectionDetails({ id }: { id: string }) {
 
   const statusOptions = ['OK', 'Requiere Atención', 'Atención Futura', 'Lleno'];
 
-  const handleInputChange = (section, field, value) => {
+  const handleInputChange = (section: keyof InspectionData, field: string, value: string) => {
     setInspectionData(prev => ({
       ...prev,
       [section]: {
-        ...prev[section],
+        ...(typeof prev[section] === 'object' ? prev[section] : {}),
         [field]: value
       }
     }));
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch(status) {
-      case 'OK':
-        return 'text-success';
-      case 'Requiere Atención':
-        return 'text-danger';
-      case 'Atención Futura':
-        return 'text-warning';
-      default:
-        return 'text-default';
+    case 'OK':
+      return 'text-success';
+    case 'Requiere Atención':
+      return 'text-danger';
+    case 'Atención Futura':
+      return 'text-warning';
+    default:
+      return 'text-default';
     }
   };
 
-  const renderField = (section, field, value) => {
+  const renderField = (section: keyof InspectionData, field: string, value: string) => {
     if (isEditing) {
       return (
         <Select
           size="sm"
-          value={value}
+          selectedKeys={[value]}
           className="min-w-[200px]"
           onChange={(e) => handleInputChange(section, field, e.target.value)}
         >

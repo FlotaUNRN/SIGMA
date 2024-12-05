@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import InspectionDetails from '@/app/components/inspections/inspection-details';
+import InspectionDetails from '@/app/components/inspections//inspection-details';
 import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {

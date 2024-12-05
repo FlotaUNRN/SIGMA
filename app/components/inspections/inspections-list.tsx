@@ -1,8 +1,7 @@
 'use client';
 
-import { Button, Card, CardBody, CardHeader, Input } from '@nextui-org/react';
+import { Button, Card, CardBody, CardHeader } from '@nextui-org/react';
 import { useState } from 'react';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import Search from '@/app/components/search';
 
@@ -56,7 +55,7 @@ interface Inspection {
   estado: string;
 }
 
-export default function InspectionsList({ searchParams }) {
+export default function InspectionsList() {
   const [activeForm, setActiveForm] = useState(false);
   
   const inspections: Inspection[] = [
@@ -190,7 +189,7 @@ export default function InspectionsList({ searchParams }) {
                       </div>
                     </div>
                   )}
-                  {Object.entries(inspection.fluidos).some(([_, value]) => value === 'Requiere Atención') && (
+                  {Object.entries(inspection.fluidos).some(([, value]) => value === 'Requiere Atención') && (
                     <div className="mt-2">
                       <span className="text-small bg-warning/10 text-warning px-2 py-1 rounded">
                         Requiere revisión de fluidos
