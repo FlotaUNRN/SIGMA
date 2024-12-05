@@ -5,20 +5,34 @@ import { Card, CardBody, CardHeader, Image, Button, Input, Select, SelectItem } 
 import Link from 'next/link';
 
 interface InspectionData {
-  vehiculo: string;
-  referencia: string;
-  fecha: string;
-  odometro: string;
-  imagenes: Record<string, string>;
-  alertasTablero: string[];
-  fluidos: Record<string, string>;
-  mangueras: Record<string, string>;
-  correas: Record<string, string>;
-  filtros: Record<string, string>;
-  neumaticos: Record<string, string>;
-  seguridad: Record<string, string>;
-  notas: string;
-}
+    vehiculo: string;
+    referencia: string;
+    fecha: string;
+    odometro: string;
+    imagenes: {
+      [key: string]: string;
+    };
+    alertasTablero: string[];
+    fluidos: {
+      [key: string]: string;
+    };
+    mangueras: {
+      [key: string]: string;
+    };
+    correas: {
+      [key: string]: string;
+    };
+    filtros: {
+      [key: string]: string;
+    };
+    neumaticos: {
+      [key: string]: string;
+    };
+    seguridad: {
+      [key: string]: string;
+    };
+    notas: string;
+  }
 
 export default function InspectionDetails() {
   const [isEditing, setIsEditing] = useState(false);
