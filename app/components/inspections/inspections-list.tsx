@@ -1,138 +1,40 @@
 'use client';
-
-import { Button, Card, CardBody, CardHeader } from '@nextui-org/react';
-import { useState } from 'react';
-import Link from 'next/link';
+import { Button, CardFooter, Pagination, Spinner } from '@nextui-org/react';
 import Search from '@/app/components/search';
+import { useState } from 'react';
+import { CreateInspectionForm } from './create-form';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Card, CardHeader, CardBody } from '@nextui-org/react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useTotalInspectionsPages, useInspections } from '@/hooks/swr-hooks';
+import { DeleteInspectionButton } from './delete-button';
+import { Inspection } from '@/app/lib/definitions';
+import { format } from 'date-fns';
 
-interface Inspection {
-  id: string;
-  vehiculo: string;
-  referencia: string;
-  fecha: string;
-  odometro: string;
-  imagenes: {
-    frente: string;
-    ladoConductor: string;
-    ladoPasajero: string;
-    trasera: string;
+export default function InspectionsList({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+    page?: string;
   };
-  alertasTablero: string[];
-  fluidos: {
-    aceiteMotor: string;
-    transmision: string;
-    diferencial: string;
-    refrigerante: string;
-    frenos: string;
-    direccionHidraulica: string;
-    limpiaparabrisas: string;
-  };
-  mangueras: {
-    direccion: string;
-    calefaccion: string;
-  };
-  correas: {
-    serpentina: string;
-    alternador: string;
-  };
-  filtros: {
-    aire: string;
-    combustible: string;
-    aceite: string;
-  };
-  neumaticos: {
-    delanteroDerecho: string;
-    delanteroIzquierdo: string;
-    traseroDerecho: string;
-    traseroIzquierdo: string;
-  };
-  seguridad: {
-    frenoEmergencia: string;
-    limpiaparabrisasDelantero: string;
-    limpiaparabrisasTrasero: string;
-  };
-  notas: string;
-  estado: string;
-}
+}) {
+  const query = searchParams?.query;
+  const currentPage = Number(searchParams?.page) || 1;
+  const [pending, setPending] = useState(false);
+  const { inspections, isLoading } = useInspections(query, currentPage);
+  const { totalInspectionsPages } = useTotalInspectionsPages(query);
+  const { replace } = useRouter();
+  const pathname = usePathname();
 
-interface InspectionsListProps {
-    searchParams?: {
-      query?: string;
-      page?: string;
-    };
-  }
-export default function InspectionsList({ searchParams }: InspectionsListProps) {
+  const data = inspections ?? [];
   const [activeForm, setActiveForm] = useState(false);
-  console.log('Search params:', searchParams);
-  const inspections: Inspection[] = [
-    {
-      id: '1',
-      vehiculo: 'Subaru Forrester',
-      referencia: 'VEH-001',
-      fecha: '01/01/2021 20:04:10',
-      odometro: '80.000',
-      imagenes: {
-        frente: '/api/placeholder/800/600',
-        ladoConductor: '/api/placeholder/800/600',
-        ladoPasajero: '/api/placeholder/800/600',
-        trasera: '/api/placeholder/800/600'
-      },
-      alertasTablero: ['Presión de neumáticos', 'ABS', 'Nivel de aceite bajo'],
-      fluidos: {
-        aceiteMotor: 'OK',
-        transmision: 'OK',
-        diferencial: 'OK',
-        refrigerante: 'OK',
-        frenos: 'Lleno',
-        direccionHidraulica: 'Requiere atención',
-        limpiaparabrisas: 'Lleno'
-      },
-      mangueras: {
-        direccion: 'OK',
-        calefaccion: 'OK'
-      },
-      correas: {
-        serpentina: 'OK',
-        alternador: 'Atención futura'
-      },
-      filtros: {
-        aire: 'Requiere atención',
-        combustible: 'OK',
-        aceite: 'OK'
-      },
-      neumaticos: {
-        delanteroDerecho: 'OK',
-        delanteroIzquierdo: 'OK',
-        traseroDerecho: 'Atención futura',
-        traseroIzquierdo: 'Atención futura'
-      },
-      seguridad: {
-        frenoEmergencia: 'OK',
-        limpiaparabrisasDelantero: 'OK',
-        limpiaparabrisasTrasero: 'OK'
-      },
-      notas: 'El vehículo está en buen estado, pero necesita una puesta a punto. Se recomienda revisar el estado de las correas.',
-      estado: 'Completado'
-    }
-  ];
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-    case 'Completado':
-      return 'bg-success/10 text-success';
-    case 'Pendiente':
-      return 'bg-warning/10 text-warning';
-    case 'Requiere Atención':
-      return 'bg-danger/10 text-danger';
-    default:
-      return 'bg-default/10 text-default';
-    }
-  };
 
   return (
     <>
       <div className="flex flex-col items-center justify-between gap-2 md:flex-row">
-        <Search placeholder="Buscar inspecciones..." />
+        <Search placeholder="Buscar inspecciones" />
         <div className="mb-2 md:m-0">
           <Button
             color="success"
@@ -149,64 +51,97 @@ export default function InspectionsList({ searchParams }: InspectionsListProps) 
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z"
+                  d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"
                 />
               </svg>
             }
-            className="text-black"
           >
             Nueva inspección
           </Button>
         </div>
       </div>
 
-      <div className="relative mt-3 grid grid-cols-1 gap-4 overflow-x-auto overflow-y-auto shadow-xl sm:rounded-lg md:grid-cols-2 lg:grid-cols-3">
-        {inspections.map((inspection) => (
-          <Link href={`/dashboard/inspections/${inspection.id}`} key={inspection.id}>
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-              <CardHeader className="flex justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold">{inspection.vehiculo}</h3>
-                  <p className="text-small text-default-500">Ref: {inspection.referencia}</p>
-                </div>
-                <span className={`px-2 py-1 rounded text-sm ${getStatusColor(inspection.estado)}`}>
-                  {inspection.estado}
-                </span>
-              </CardHeader>
-              <CardBody>
-                <div className="space-y-2">
-                  <p className="text-small">
-                    <span className="font-medium">Fecha: </span>
-                    {inspection.fecha}
-                  </p>
-                  <p className="text-small">
-                    <span className="font-medium">Odómetro: </span>
-                    {inspection.odometro} km
-                  </p>
-                  {inspection.alertasTablero.length > 0 && (
-                    <div>
-                      <p className="text-small font-medium">Alertas:</p>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {inspection.alertasTablero.map((alerta, index) => (
-                          <span key={index} className="px-2 py-1 bg-danger/10 text-danger rounded text-small">
-                            {alerta}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {Object.entries(inspection.fluidos).some(([, value]) => value === 'Requiere Atención') && (
-                    <div className="mt-2">
-                      <span className="text-small bg-warning/10 text-warning px-2 py-1 rounded">
-                        Requiere revisión de fluidos
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </CardBody>
-            </Card>
-          </Link>
+      <AnimatePresence initial={false}>
+        {activeForm && (
+          <motion.section
+            key="content"
+            initial="collapsed"
+            animate="open"
+            exit="collapsed"
+            variants={{
+              open: { opacity: 1, height: 'auto' },
+              collapsed: { opacity: 0, height: 0 },
+            }}
+            transition={{ duration: 0.5, ease: [0.04, 0.62, 0.23, 0.98] }}
+          >
+            <CreateInspectionForm
+              setActiveForm={setActiveForm}
+              searchParams={searchParams}
+            />
+          </motion.section>
+        )}
+      </AnimatePresence>
+
+      {isLoading && <Spinner className='mt-5 w-full justify-center'/>}
+      
+      <div className="relative mt-3 grid grid-cols-1 gap-4 overflow-x-auto overflow-y-auto sm:rounded-lg md:grid-cols-2 lg:grid-cols-3">
+        {data.map((inspection: Inspection) => (
+          <Card className="py-4" key={inspection.id}>
+            <CardHeader className="flex-col items-start px-4 pb-0 pt-2">
+              <p className="text-tiny font-bold uppercase">
+                Código: {inspection.reference_code}
+              </p>
+              <small className="text-default-500">
+                Fecha: {format(new Date(inspection.inspection_date), 'dd/MM/yyyy')}
+              </small>
+              <h4 className="text-large font-bold">
+                Estado: {inspection.status}
+              </h4>
+            </CardHeader>
+            <CardBody className="px-4 py-2">
+              <p>Odómetro: {inspection.odometer_reading} km</p>
+              {inspection.notes && (
+                <p className="text-small text-default-500">
+                  Notas: {inspection.notes}
+                </p>
+              )}
+            </CardBody>
+            <CardFooter className="flex justify-between px-4 pt-2">
+              <Link href={`/dashboard/inspections/${inspection.id}`}>
+                <Button color="success" variant="light" size="sm">
+                  Ver detalles
+                </Button>
+              </Link>
+              <DeleteInspectionButton
+                inspection={inspection}
+                searchParams={searchParams}
+                setPending={setPending}
+                isDisabled={pending}
+              />
+            </CardFooter>
+          </Card>
         ))}
+      </div>
+
+      <div className="flex w-full justify-center mt-3">
+        <Pagination
+          isCompact
+          showControls
+          showShadow
+          color="primary"
+          page={currentPage}
+          total={totalInspectionsPages}
+          classNames={{
+            item: 'bg-background',
+            prev: 'bg-background',
+            next: 'bg-background',
+          }}
+          onChange={(page) => {
+            const params = new URLSearchParams(searchParams);
+            params.set('page', page?.toString());
+            replace(`${pathname}?${params.toString()}`);
+          }}
+        />
       </div>
     </>
   );

@@ -1,388 +1,263 @@
 'use client';
-
-import { useState } from 'react';
-import { Card, CardBody, CardHeader, Image, Button, Input, Select, SelectItem } from '@nextui-org/react';
+import { useInspectionById, useVehicleById } from '@/hooks/swr-hooks';
+import { Spinner, Button, Card, CardBody } from '@nextui-org/react';
 import Link from 'next/link';
-
-interface ImagenesData {
-  frente: string;
-  ladoConductor: string;
-  ladoPasajero: string;
-  trasera: string;
-}
-
-interface FluidosData {
-  aceiteMotor: string;
-  transmision: string;
-  diferencial: string;
-  refrigerante: string;
-  frenos: string;
-  direccionHidraulica: string;
-  limpiaparabrisas: string;
-}
-
-interface ManguerasData {
-  direccion: string;
-  calefaccion: string;
-}
-
-interface CorreasData {
-  serpentina: string;
-  alternador: string;
-}
-
-interface FiltrosData {
-  aire: string;
-  combustible: string;
-  aceite: string;
-}
-
-interface NeumaticosData {
-  delanteroIzquierdo: string;
-  traseroIzquierdo: string;
-  delanteroDerecho: string;
-  traseroDerecho: string;
-}
-
-interface SeguridadData {
-  frenoEmergencia: string;
-  limpiaparabrisasDelantero: string;
-  limpiaparabrisasTrasero: string;
-}
-
-interface InspectionData {
-  vehiculo: string;
-  referencia: string;
-  fecha: string;
-  odometro: string;
-  imagenes: ImagenesData;
-  alertasTablero: string[];
-  fluidos: FluidosData;
-  mangueras: ManguerasData;
-  correas: CorreasData;
-  filtros: FiltrosData;
-  neumaticos: NeumaticosData;
-  seguridad: SeguridadData;
-  notas: string;
-}
+import { format } from 'date-fns';
+import { ChevronLeftIcon } from '@heroicons/react/24/outline';
 
 export default function InspectionDetails({ id }: { id: string }) {
-  console.log('Loading inspection:', id);
-  const [isEditing, setIsEditing] = useState(false);
-  const [inspectionData, setInspectionData] = useState<InspectionData>({
-    vehiculo: 'Subaru Forrester',
-    referencia: 'VEH-001',
-    fecha: '1/1/2021 20:04:10',
-    odometro: '80.000',
-    imagenes: {
-      frente: '/api/placeholder/800/600',
-      ladoConductor: '/api/placeholder/800/600',
-      ladoPasajero: '/api/placeholder/800/600',
-      trasera: '/api/placeholder/800/600'
-    },
-    alertasTablero: ['Presión de Neumáticos', 'ABS', 'Nivel de Aceite Bajo'],
-    fluidos: {
-      aceiteMotor: 'OK',
-      transmision: 'OK',
-      diferencial: 'OK',
-      refrigerante: 'OK',
-      frenos: 'Lleno',
-      direccionHidraulica: 'Requiere Atención',
-      limpiaparabrisas: 'Lleno'
-    },
-    mangueras: {
-      direccion: 'OK',
-      calefaccion: 'OK'
-    },
-    correas: {
-      serpentina: 'OK',
-      alternador: 'Atención Futura'
-    },
-    filtros: {
-      aire: 'Requiere Atención',
-      combustible: 'OK',
-      aceite: 'OK'
-    },
-    neumaticos: {
-      delanteroIzquierdo: 'OK',
-      traseroIzquierdo: 'OK',
-      delanteroDerecho: 'Atención Futura',
-      traseroDerecho: 'Atención Futura'
-    },
-    seguridad: {
-      frenoEmergencia: 'OK',
-      limpiaparabrisasDelantero: 'OK',
-      limpiaparabrisasTrasero: 'OK'
-    },
-    notas: 'El vehículo está en buen estado, pero necesita una puesta a punto. Se recomienda revisar el estado de las correas.'
-  });
+  const { inspection, isLoading } = useInspectionById(id);
+  const { vehicle, isLoading: isLoadingVehicle } = useVehicleById(inspection?.vehicle_id || '');
 
-  const statusOptions = ['OK', 'Requiere Atención', 'Atención Futura', 'Lleno'];
-
-  const handleInputChange = (
-    section: keyof InspectionData,
-    field: string,
-    value: string
-  ) => {
-    setInspectionData((prev) => {
-      if (['vehiculo', 'referencia', 'fecha', 'odometro', 'notas'].includes(section)) {
-        return {
-          ...prev,
-          [section]: value
-        };
-      }
-
-      if (section === 'alertasTablero') {
-        return {
-          ...prev,
-          alertasTablero: [...prev.alertasTablero, value]
-        };
-      }
-
-      const sectionData = prev[section] as unknown as Record<string, unknown>;
-      return {
-        ...prev,
-        [section]: {
-          ...sectionData,
-          [field]: value
-        }
-      };
-    });
-  };
-
-  const getStatusColor = (status: string) => {
-    switch(status) {
-    case 'OK':
-      return 'text-success';
-    case 'Requiere Atención':
-      return 'text-danger';
-    case 'Atención Futura':
-      return 'text-warning';
-    default:
-      return 'text-default';
-    }
-  };
-
-  const renderField = (section: keyof InspectionData, field: string, value: string) => {
-    if (isEditing) {
-      return (
-        <Select
-          size="sm"
-          selectedKeys={[value]}
-          className="min-w-[200px]"
-          onChange={(e) => handleInputChange(section, field, e.target.value)}
-        >
-          {statusOptions.map((option) => (
-            <SelectItem key={option} value={option}>
-              {option}
-            </SelectItem>
-          ))}
-        </Select>
-      );
-    }
+  if (isLoading || isLoadingVehicle) {
     return (
-      <div className="min-w-[200px] px-3 py-1.5 rounded bg-default-100">
-        <span className={getStatusColor(value)}>{value}</span>
+      <div className="flex h-full items-center justify-center">
+        <Spinner size="lg" color="primary" />
       </div>
     );
+  }
+
+  if (!inspection) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-lg">No se encontró la inspección</p>
+      </div>
+    );
+  }
+
+  const renderStatus = (status: string) => {
+    const baseClasses = 'px-2 py-1 rounded-full text-sm';
+    let statusClasses = '';
+
+    switch (status) {
+    case 'OK':
+      statusClasses = 'bg-success-100 text-success-700';
+      break;
+    case 'Requiere Atención':
+      statusClasses = 'bg-danger-100 text-danger-700';
+      break;
+    case 'Atención Futura':
+      statusClasses = 'bg-warning-100 text-warning-700';
+      break;
+    case 'Lleno':
+      statusClasses = 'bg-primary-100 text-primary-700';
+      break;
+    default:
+      statusClasses = 'bg-gray-100 text-gray-700';
+    }
+
+    return <span className={`${baseClasses} ${statusClasses}`}>{status}</span>;
   };
+
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center mb-8">
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
         <div>
-          <Link href="/dashboard/inspections" className="text-primary hover:underline mb-3 block">
-            ← Volver a inspecciones
-          </Link>
-          <h1 className="text-2xl font-bold">Inspección del {inspectionData.vehiculo}</h1>
+          <div className="flex items-center gap-2">
+            <Link href="/dashboard/inspections">
+              <Button
+                color="primary"
+                variant="ghost"
+                startContent={<ChevronLeftIcon className="h-5 w-5" />}
+              >
+                Volver
+              </Button>
+            </Link>
+            <h1 className="text-2xl font-bold">
+              Inspección #{inspection.reference_code}
+            </h1>
+          </div>
+          {vehicle && (
+            <p className="mt-2 text-lg text-foreground/80">
+              {vehicle.make} {vehicle.model} - {vehicle.license_plate}
+            </p>
+          )}
         </div>
-        <Button 
-          color="primary"
-          size="lg"
-          onClick={() => setIsEditing(!isEditing)}
-        >
-          {isEditing ? 'Guardar Cambios' : 'Editar Inspección'}
-        </Button>
+        <div className="flex items-center gap-2">
+          <span className={`rounded-full px-3 py-1 text-sm font-medium ${
+            inspection.status === 'Completado' ? 'bg-success-100 text-success-700' :
+              inspection.status === 'En Proceso' ? 'bg-primary-100 text-primary-700' :
+                'bg-warning-100 text-warning-700'
+          }`}>
+            {inspection.status}
+          </span>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <Card className="shadow-md">
-          <CardHeader className="border-b border-divider">
-            <h3 className="text-lg font-semibold">Información Básica</h3>
-          </CardHeader>
-          <CardBody className="p-6">
-            <div className="space-y-4">
-              <div className="grid gap-2">
-                <span className="text-small text-default-500">Vehículo</span>
-                {isEditing ? (
-                  <Input 
-                    value={inspectionData.vehiculo}
-                    className="w-full"
-                    size="lg"
-                    onChange={(e) => handleInputChange('vehiculo', '', e.target.value)}
-                  />
-                ) : (
-                  <div className="w-full p-3 rounded-md bg-default-100 min-h-[44px] flex items-center">
-                    {inspectionData.vehiculo}
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardBody>
+            <h2 className="mb-4 text-xl font-semibold">Información General</h2>
+            <div className="space-y-2">
+              <p>
+                <span className="font-medium">Fecha de Inspección:</span>{' '}
+                {format(new Date(inspection.inspection_date), 'dd/MM/yyyy HH:mm')}
+              </p>
+              <p>
+                <span className="font-medium">Lectura del Odómetro:</span>{' '}
+                {inspection.odometer_reading.toLocaleString()} km
+              </p>
+            </div>
+          </CardBody>
+        </Card>
+
+        {(inspection.front_image_url || 
+          inspection.back_image_url || 
+          inspection.driver_side_image_url || 
+          inspection.passenger_side_image_url) && (
+          <Card>
+            <CardBody>
+              <h2 className="mb-4 text-xl font-semibold">Imágenes</h2>
+              <div className="grid grid-cols-2 gap-4">
+                {inspection.front_image_url && (
+                  <div>
+                    <p className="mb-2 font-medium">Vista Frontal</p>
+                    <img 
+                      src={inspection.front_image_url} 
+                      alt="Vista frontal" 
+                      className="rounded-lg object-cover"
+                    />
+                  </div>
+                )}
+                {inspection.back_image_url && (
+                  <div>
+                    <p className="mb-2 font-medium">Vista Trasera</p>
+                    <img 
+                      src={inspection.back_image_url} 
+                      alt="Vista trasera" 
+                      className="rounded-lg object-cover"
+                    />
+                  </div>
+                )}
+                {inspection.driver_side_image_url && (
+                  <div>
+                    <p className="mb-2 font-medium">Lado del Conductor</p>
+                    <img 
+                      src={inspection.driver_side_image_url} 
+                      alt="Lado del conductor" 
+                      className="rounded-lg object-cover"
+                    />
+                  </div>
+                )}
+                {inspection.passenger_side_image_url && (
+                  <div>
+                    <p className="mb-2 font-medium">Lado del Pasajero</p>
+                    <img 
+                      src={inspection.passenger_side_image_url} 
+                      alt="Lado del pasajero" 
+                      className="rounded-lg object-cover"
+                    />
                   </div>
                 )}
               </div>
-              <div className="grid gap-2">
-                <span className="text-small text-default-500">Odómetro</span>
-                {isEditing ? (
-                  <Input 
-                    value={inspectionData.odometro}
-                    className="w-full"
-                    size="lg"
-                    endContent={<span className="text-default-400">km</span>}
-                    onChange={(e) => handleInputChange('odometro', '', e.target.value)}
-                  />
-                ) : (
-                  <div className="w-full p-3 rounded-md bg-default-100 min-h-[44px] flex items-center">
-                    {inspectionData.odometro} km
-                  </div>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <span className="text-small text-default-500">Fecha/Hora</span>
-                <div className="w-full p-3 rounded-md bg-default-100 min-h-[44px] flex items-center">
-                  {inspectionData.fecha}
-                </div>
-              </div>
-            </div>
-          </CardBody>
-        </Card>
+            </CardBody>
+          </Card>
+        )}
 
-        <Card className="shadow-md">
-          <CardHeader className="border-b border-divider">
-            <h3 className="text-lg font-semibold">Imágenes del Vehículo</h3>
-          </CardHeader>
-          <CardBody className="p-6">
-            <div className="grid grid-cols-2 gap-4">
-              {Object.entries(inspectionData.imagenes).map(([key, url]) => (
-                <div key={key} className="aspect-video">
-                  <Image
-                    src={url}
-                    alt={`Vista ${key}`}
-                    className="object-cover rounded-lg w-full h-full"
-                  />
+        <Card>
+          <CardBody>
+            <h2 className="mb-4 text-xl font-semibold">Estado de Fluidos</h2>
+            <div className="grid gap-3">
+              {[
+                { label: 'Aceite de Motor', value: inspection.engine_oil_status },
+                { label: 'Transmisión', value: inspection.transmission_status },
+                { label: 'Diferencial', value: inspection.differential_status },
+                { label: 'Refrigerante', value: inspection.coolant_status },
+                { label: 'Líquido de Frenos', value: inspection.brake_fluid_status },
+                { label: 'Dirección Hidráulica', value: inspection.power_steering_status },
+                { label: 'Limpiaparabrisas', value: inspection.wiper_fluid_status },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex items-center justify-between">
+                  <span className="font-medium">{label}</span>
+                  {renderStatus(value)}
                 </div>
               ))}
             </div>
           </CardBody>
         </Card>
 
-        <Card className="shadow-md">
-          <CardHeader className="border-b border-divider">
-            <h3 className="text-lg font-semibold">Fluidos</h3>
-          </CardHeader>
-          <CardBody className="p-6">
-            <div className="space-y-4">
-              {Object.entries(inspectionData.fluidos).map(([key, value]) => (
-                <div key={key} className="flex justify-between items-center gap-4">
-                  <span className="capitalize min-w-[150px]">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
-                  {renderField('fluidos', key, value)}
+        <Card>
+          <CardBody>
+            <h2 className="mb-4 text-xl font-semibold">Mangueras y Correas</h2>
+            <div className="grid gap-3">
+              {[
+                { label: 'Manguera de Dirección', value: inspection.steering_hose_status },
+                { label: 'Manguera del Calefactor', value: inspection.heater_hose_status },
+                { label: 'Correa Serpentina', value: inspection.serpentine_belt_status },
+                { label: 'Correa del Alternador', value: inspection.alternator_belt_status },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex items-center justify-between">
+                  <span className="font-medium">{label}</span>
+                  {renderStatus(value)}
                 </div>
               ))}
             </div>
           </CardBody>
         </Card>
 
-        <Card className="shadow-md">
-          <CardHeader className="border-b border-divider">
-            <h3 className="text-lg font-semibold">Neumáticos</h3>
-          </CardHeader>
-          <CardBody className="p-6">
-            <div className="space-y-4">
-              {Object.entries(inspectionData.neumaticos).map(([key, value]) => (
-                <div key={key} className="flex justify-between items-center gap-4">
-                  <span className="capitalize min-w-[150px]">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
-                  {renderField('neumaticos', key, value)}
+        <Card>
+          <CardBody>
+            <h2 className="mb-4 text-xl font-semibold">Filtros</h2>
+            <div className="grid gap-3">
+              {[
+                { label: 'Filtro de Aire', value: inspection.air_filter_status },
+                { label: 'Filtro de Combustible', value: inspection.fuel_filter_status },
+                { label: 'Filtro de Aceite', value: inspection.oil_filter_status },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex items-center justify-between">
+                  <span className="font-medium">{label}</span>
+                  {renderStatus(value)}
                 </div>
               ))}
             </div>
           </CardBody>
         </Card>
 
-        <Card className="shadow-md">
-          <CardHeader className="border-b border-divider">
-            <h3 className="text-lg font-semibold">Filtros</h3>
-          </CardHeader>
-          <CardBody className="p-6">
-            <div className="space-y-4">
-              {Object.entries(inspectionData.filtros).map(([key, value]) => (
-                <div key={key} className="flex justify-between items-center gap-4">
-                  <span className="capitalize min-w-[150px]">{key}</span>
-                  {renderField('filtros', key, value)}
+        <Card>
+          <CardBody>
+            <h2 className="mb-4 text-xl font-semibold">Estado de Neumáticos</h2>
+            <div className="grid gap-3">
+              {[
+                { label: 'Delantero Izquierdo', value: inspection.front_left_tire_status },
+                { label: 'Delantero Derecho', value: inspection.front_right_tire_status },
+                { label: 'Trasero Izquierdo', value: inspection.rear_left_tire_status },
+                { label: 'Trasero Derecho', value: inspection.rear_right_tire_status },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex items-center justify-between">
+                  <span className="font-medium">{label}</span>
+                  {renderStatus(value)}
                 </div>
               ))}
             </div>
           </CardBody>
         </Card>
 
-        <Card className="shadow-md">
-          <CardHeader className="border-b border-divider">
-            <h3 className="text-lg font-semibold">Seguridad</h3>
-          </CardHeader>
-          <CardBody className="p-6">
-            <div className="space-y-4">
-              {Object.entries(inspectionData.seguridad).map(([key, value]) => (
-                <div key={key} className="flex justify-between items-center gap-4">
-                  <span className="capitalize min-w-[150px]">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
-                  {renderField('seguridad', key, value)}
+        <Card>
+          <CardBody>
+            <h2 className="mb-4 text-xl font-semibold">Seguridad</h2>
+            <div className="grid gap-3">
+              {[
+                { label: 'Freno de Emergencia', value: inspection.emergency_brake_status },
+                { label: 'Limpiaparabrisas Delantero', value: inspection.front_wiper_status },
+                { label: 'Limpiaparabrisas Trasero', value: inspection.rear_wiper_status },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex items-center justify-between">
+                  <span className="font-medium">{label}</span>
+                  {renderStatus(value)}
                 </div>
               ))}
             </div>
           </CardBody>
         </Card>
 
-        <Card className="shadow-md md:col-span-2">
-          <CardHeader className="border-b border-divider">
-            <h3 className="text-lg font-semibold">Mangueras y Correas</h3>
-          </CardHeader>
-          <CardBody className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <h4 className="font-medium mb-4">Mangueras</h4>
-                <div className="space-y-4">
-                  {Object.entries(inspectionData.mangueras).map(([key, value]) => (
-                    <div key={key} className="flex justify-between items-center gap-4">
-                      <span className="capitalize min-w-[150px]">{key}</span>
-                      {renderField('mangueras', key, value)}
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <h4 className="font-medium mb-4">Correas</h4>
-                <div className="space-y-4">
-                  {Object.entries(inspectionData.correas).map(([key, value]) => (
-                    <div key={key} className="flex justify-between items-center gap-4">
-                      <span className="capitalize min-w-[150px]">{key}</span>
-                      {renderField('correas', key, value)}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </CardBody>
-        </Card>
-
-        <Card className="shadow-md md:col-span-2">
-          <CardHeader className="border-b border-divider">
-            <h3 className="text-lg font-semibold">Notas</h3>
-          </CardHeader>
-          <CardBody className="p-6">
-            {isEditing ? (
-              <Input
-                value={inspectionData.notas}
-                className="w-full"
-                onChange={(e) => handleInputChange('notas', '', e.target.value)}
-              />
-            ) : (
-              <p className="px-3 py-1.5 rounded bg-default-100">{inspectionData.notas}</p>
-            )}
-          </CardBody>
-        </Card>
+        {inspection.notes && (
+          <Card className="md:col-span-2">
+            <CardBody>
+              <h2 className="mb-4 text-xl font-semibold">Notas</h2>
+              <p className="whitespace-pre-wrap">{inspection.notes}</p>
+            </CardBody>
+          </Card>
+        )}
       </div>
     </div>
   );
