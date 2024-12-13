@@ -1,16 +1,15 @@
 'use client';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
-
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { Input } from '@/app/components/form/input';
-import { useTotalProfesorsPages } from '@/hooks/swr-hooks';
+import { useTotalVehiclesPages } from '@/hooks/swr-hooks';
 
 export default function Search({ placeholder }: { placeholder: string }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
-  const { mutateTotalProfesorsPages } = useTotalProfesorsPages();
+  const { mutateTotalVehiclesPages } = useTotalVehiclesPages();
   const handleSearch = useDebouncedCallback((term) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', '1');
@@ -19,7 +18,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
     } else {
       params.delete('query');
     }
-    mutateTotalProfesorsPages();
+    mutateTotalVehiclesPages();
     replace(`${pathname}?${params.toString()}`);
   }, 300);
   return (

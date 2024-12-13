@@ -4,98 +4,98 @@ const fetcher = async (...args: Parameters<typeof fetch>) => {
   const res = await fetch(...args);
   return res.json();
 };
-export function useProfesorById(id: string) {
+export function useVehicleById(id: string) {
   const { data, error, isLoading, mutate } = useSWR(
-    `/api/profesor?id=${id}`,
+    `/api/vehicles?id=${id}`,
     fetcher,
   );
 
   return {
-    profesor: data,
+    vehicle: data,
     isLoading,
     isError: error,
-    mutateProfesor: mutate,
+    mutateVehicle: mutate,
   };
 }
-export function useProfesors(query?: string, page?: number) {
+export function useVehicles(query?: string, page?: number) {
   if (!page && !query) {
-    const { data, error, isLoading, mutate } = useSWR('/api/profesor', fetcher);
+    const { data, error, isLoading, mutate } = useSWR('/api/vehicles', fetcher);
     return {
-      profesors: data,
+      vehicles: data,
       isLoading,
       isError: error,
-      mutateProfesors: mutate,
+      mutateVehicles: mutate,
     };
   } else if (page && !query) {
     const { data, error, isLoading, mutate } = useSWR(
-      `/api/profesor?page=${page}`,
+      `/api/vehicles?page=${page}`,
       fetcher,
     );
     return {
-      profesors: data,
+      vehicles: data,
       isLoading,
       isError: error,
-      mutateProfesors: mutate,
+      mutateVehicles: mutate,
     };
   } else if (query && !page) {
     const { data, error, isLoading, mutate } = useSWR(
-      `/api/profesor?query=${query}`,
+      `/api/vehicles?query=${query}`,
       fetcher,
     );
     return {
-      profesors: data,
+      vehicles: data,
       isLoading,
       isError: error,
-      mutateProfesors: mutate,
+      mutateVehicles: mutate,
     };
   } else {
     const { data, error, isLoading, mutate } = useSWR(
-      `/api/profesor?page=${page}&query=${query}`,
+      `/api/vehicles?page=${page}&query=${query}`,
       fetcher,
     );
     return {
-      profesors: data,
+      vehicles: data,
       isLoading,
       isError: error,
-      mutateProfesors: mutate,
+      mutateVehicles: mutate,
     };
   }
 }
-export function useTotalProfesors() {
+export function useTotalVehicles() {
   const { data, error, isLoading, mutate } = useSWR(
-    '/api/count/profesor',
+    '/api/count/vehicles',
     fetcher,
   );
 
   return {
-    totalProfesors: data,
+    totalVehicles: data,
     isLoading,
     isError: error,
-    mutateTotalProfesors: mutate,
+    mutateTotalVehicles: mutate,
   };
 }
-export function useTotalProfesorsPages(query?: string) {
+export function useTotalVehiclesPages(query?: string) {
   if (!query) {
     const { data, error, isLoading, mutate } = useSWR(
-      '/api/count/profesor/pages',
+      '/api/count/vehicles/pages',
       fetcher,
     );
     return {
-      totalProfesorsPages: data,
+      totalVehiclesPages: data,
       isLoading,
       isError: error,
-      mutateTotalProfesorsPages: mutate,
+      mutateTotalVehiclesPages: mutate,
     };
   } else {
     const { data, error, isLoading, mutate } = useSWR(
-      `/api/count/profesor/pages?query=${query}`,
+      `/api/count/vehicles/pages?query=${query}`,
       fetcher,
     );
     return {
-      totalProfesorsPages: data,
+      totalVehiclesPages: data,
       isLoading,
       isError: error,
-      mutateTotalProfesorsPages: mutate,
+      mutateTotalVehiclesPages: mutate,
     };
   }
 }
