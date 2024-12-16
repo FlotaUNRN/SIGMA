@@ -1,5 +1,10 @@
 'use client';
-import { Button, CardFooter, Pagination, Spinner } from '@nextui-org/react';
+import {
+  Button,
+  CardFooter,
+  Pagination,
+  Skeleton,
+} from '@nextui-org/react';
 import Search from '@/app/components/search';
 import { useState } from 'react';
 import { CreateVehicleForm } from './create-form';
@@ -83,25 +88,62 @@ const FilterCreateVehicle = ({
           </motion.section>
         )}
       </AnimatePresence>
-      {isLoading && <Spinner className='mt-5 w-full justify-center'/>}
+
       <div className="relative mt-3 grid grid-cols-1 gap-4 overflow-x-auto overflow-y-auto sm:rounded-lg md:grid-cols-2 lg:grid-cols-3">
+        {isLoading &&
+          Array.from({ length: 6 }).map((_, index) => (
+            <Card className="py-4" key={`skeleton-${index}`}>
+              <CardHeader className="w-full flex-col items-start gap-3 px-4 pb-0 pt-2">
+                <Skeleton className="h-4 w-3/5 rounded-lg" />
+                <Skeleton className="h-3 w-1/5 rounded-lg" />
+                <Skeleton className="h-7 w-2/5 rounded-lg" />
+              </CardHeader>
+              <CardBody className="items-center justify-center overflow-visible py-2">
+                <Skeleton className="h-40 w-full rounded-lg" />
+              </CardBody>
+              <CardFooter className="flex justify-between px-4 pt-2">
+                <Skeleton className="h-7 w-1/4 rounded-lg" />
+                <Skeleton className="h-7 w-1/4 rounded-lg" />
+              </CardFooter>
+            </Card>
+          ))}
+
         {data.map((vehicle: Vehicle) => (
           <Card className="py-4" key={vehicle.vin}>
-            <CardHeader className="flex-col items-start px-4 pb-0 pt-2">
-              <p className="text-tiny font-bold uppercase">
-                {vehicle.make} {vehicle.model}
-              </p>
-              <small className="text-default-500">{vehicle.model}</small>
-              <h4 className="text-large font-bold">{vehicle.license_plate}</h4>
+            <CardHeader className="flex-col items-start gap-1 px-4 pb-0 pt-2">
+              <Skeleton className="w-3/5 rounded-lg" isLoaded={!!vehicle.make}>
+                <p className="text-tiny font-bold uppercase">
+                  {vehicle.make} {vehicle.model}
+                </p>
+              </Skeleton>
+              <Skeleton className="w-1/5 rounded-lg" isLoaded={!!vehicle.year}>
+                <small className="text-default-500">{vehicle.year}</small>
+              </Skeleton>
+              <Skeleton
+                className="w-2/5 rounded-lg"
+                isLoaded={!!vehicle.license_plate}
+              >
+                <h4 className="text-large font-bold">
+                  {vehicle.license_plate}
+                </h4>
+              </Skeleton>
             </CardHeader>
-            <CardBody className="items-center justify-center overflow-visible py-2">
-              <Image
-                alt="Card background"
-                className="rounded-xl object-cover"
-                src={vehicle.photo_url}
-                width={270}
-              />
+
+            <CardBody className="h-full items-center justify-center overflow-visible py-2">
+              <Skeleton
+                className="h-40 w-full rounded-lg"
+                isLoaded={!!vehicle.photo_url}
+              >
+                <Image
+                  alt="Card background"
+                  className="max-h-40 w-full rounded-lg object-contain"
+                  src={vehicle.photo_url}
+                  width="auto"
+                  height="160"
+                />
+              </Skeleton>
             </CardBody>
+
             <CardFooter className="flex justify-between px-4 pt-2">
               <Link href={`/dashboard/vehicles/${vehicle?.id}`}>
                 <Button color="success" variant="light" size="sm">
@@ -118,7 +160,8 @@ const FilterCreateVehicle = ({
           </Card>
         ))}
       </div>
-      <div className="flex w-full justify-center mt-3">
+
+      <div className="mt-3 flex w-full justify-center">
         <Pagination
           isCompact
           showControls

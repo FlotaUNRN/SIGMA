@@ -1,9 +1,10 @@
 'use client';
-import { Button } from '@nextui-org/react';
+import { Button, Select, SelectItem } from '@nextui-org/react';
 import { Input } from '@/app/components/form/input';
 import { useState } from 'react';
 import { createVehicle } from '@/app/lib/actions';
 import { toast } from 'sonner';
+import clsx from 'clsx';
 import {
   useVehicles,
   useTotalVehiclesPages,
@@ -47,6 +48,42 @@ export const CreateVehicleForm = ({
   const [colorError, setColorError] = useState(false);
   const [licensePlateError, setLicensePlateError] = useState(false);
   const [photoError, setPhotoError] = useState(false);
+
+  const makes = [
+    { key: 'Audi', label: 'Audi' },
+    { key: 'BMW', label: 'BMW' },
+    { key: 'Chevrolet', label: 'Chevrolet' },
+    { key: 'Citroen', label: 'Citroen' },
+    { key: 'Fiat', label: 'Fiat' },
+    { key: 'Ford', label: 'Ford' },
+    { key: 'Honda', label: 'Honda' },
+    { key: 'Iveco', label: 'Iveco' },
+    { key: 'Jeep', label: 'Jeep' },
+    { key: 'Mercedes', label: 'Mercedes' },
+    { key: 'Nissan', label: 'Nissan' },
+    { key: 'Peugeot', label: 'Peugeot' },
+    { key: 'Ram', label: 'Ram' },
+    { key: 'Renault', label: 'Renault' },
+    { key: 'Toyota', label: 'Toyota' },
+    { key: 'Volkswagen', label: 'Volkswagen' },
+    { key: 'Volvo', label: 'Volvo' },
+    { key: 'Zanella', label: 'Zanella' },
+  ];
+  const colors = [
+    { key: 'Blanco', label: 'Blanco', hex: '#FFFFFF' },
+    { key: 'Plateado', label: 'Plateado', hex: '#C0C0C0' },
+    { key: 'Gris', label: 'Gris', hex: '#808080' },
+    { key: 'Negro', label: 'Negro', hex: '#000000' },
+    { key: 'Verde', label: 'Verde', hex: '#008000' },
+    { key: 'Celeste', label: 'Celeste', hex: '#00FFFF' },
+    { key: 'Azul', label: 'Azul', hex: '#0000FF' },
+    { key: 'Amarillo', label: 'Amarillo', hex: '#FFFF00' },
+    { key: 'Dorado', label: 'Dorado', hex: '#FFD700' },
+    { key: 'Naranja', label: 'Naranja', hex: '#FFA500' },
+    { key: 'Bronze', label: 'Bronze', hex: '#CD7F32' },
+    { key: 'Marrón', label: 'Marrón', hex: '#A52A2A' },
+    { key: 'Rojo', label: 'Rojo', hex: '#FF0000' },
+  ];
 
   const validateVin = (vin: string) => {
     const re = /^.*$/i;
@@ -176,7 +213,7 @@ export const CreateVehicleForm = ({
     >
       <div className="flex flex-col gap-3 md:flex-row md:justify-between md:pb-3">
         <Input
-          label="Número de identificación vehicular"
+          label="N° de chasis"
           name="vin"
           type="text"
           variant="bordered"
@@ -198,29 +235,37 @@ export const CreateVehicleForm = ({
             input: 'font-extralight',
           }}
         />
-        <Input
-          label="Fabricante"
+
+        <Select
+          isRequired
           name="make"
-          type="text"
           variant="bordered"
+          className={clsx(
+            'max-w-x',
+            make === '' ? 'text-gray-400 dark:text-gray-600' : 'text-gray-600 dark:text-gray-400',
+          )}
+          label="Fabricante"
           labelPlacement="outside"
+          placeholder="Elegir un fabricante"
+          errorMessage={'Ingrese un fabricante valido'}
+          isInvalid={trySubmit && makeError}
           value={make}
-          onValueChange={(e) => {
-            setMake(e);
+          onSelectionChange={(e) => {
+            const selectedMake = Array.from(e).join(', ');
+            
+            setMake(selectedMake);
             if (trySubmit) {
-              validateMake(e);
+              validateMake(selectedMake);
             }
           }}
-          placeholder="Ingresar fabricante"
-          errorMessage="Ingrese un fabricante valido"
-          isRequired
-          isInvalid={trySubmit && makeError}
           classNames={{
-            inputWrapper: 'p-0',
             errorMessage: 'absolute top-0 left-0',
-            input: 'font-extralight',
           }}
-        />
+        >
+          {makes.map((make) => (
+            <SelectItem key={make.key}>{make.label}</SelectItem>
+          ))}
+        </Select>
         <Input
           label="Modelo"
           name="model"
@@ -269,29 +314,45 @@ export const CreateVehicleForm = ({
             input: 'font-extralight',
           }}
         />
-        <Input
-          label="Color"
+        <Select
+          isRequired
           name="color"
-          type="text"
           variant="bordered"
+          className={clsx(
+            'max-w-x',
+            color === '' ? 'text-gray-400 dark:text-gray-600' : 'text-gray-600 dark:text-gray-400',
+          )}
+          label="Color"
           labelPlacement="outside"
+          placeholder="Elegir un color"
+          errorMessage={'Ingrese un color valido'}
+          isInvalid={trySubmit && colorError}
           value={color}
-          onValueChange={(e) => {
-            setColor(e);
+          onSelectionChange={(e) => {
+            const selectedColor = Array.from(e).join(', ');
+            setColor(selectedColor);
             if (trySubmit) {
-              validateColor(e);
+              validateColor(selectedColor);
             }
           }}
-          placeholder="Ingresar color"
-          errorMessage="Ingresa un color valido"
-          isRequired
-          isInvalid={trySubmit && colorError}
           classNames={{
-            inputWrapper: 'p-0',
             errorMessage: 'absolute top-0 left-0',
-            input: 'font-extralight',
           }}
-        />
+        >
+          {colors.map((color) => (
+            <SelectItem
+              key={color.key}
+              startContent={
+                <div
+                  className="h-4 w-4 rounded-full"
+                  style={{ backgroundColor: color.hex }}
+                ></div>
+              }
+            >
+              {color.label}
+            </SelectItem>
+          ))}
+        </Select>
         <Input
           label="Patente"
           name="license_plate"
