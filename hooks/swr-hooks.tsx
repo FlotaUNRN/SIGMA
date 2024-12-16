@@ -4,6 +4,7 @@ const fetcher = async (...args: Parameters<typeof fetch>) => {
   const res = await fetch(...args);
   return res.json();
 };
+
 export function useVehicleById(id: string) {
   const { data, error, isLoading, mutate } = useSWR(
     `/api/vehicles?id=${id}`,
@@ -17,6 +18,18 @@ export function useVehicleById(id: string) {
     mutateVehicle: mutate,
   };
 }
+
+export function useAllVehicles() {
+  const { data, error, isLoading, mutate } = useSWR('/api/vehicles/all', fetcher);
+  
+  return {
+    vehicles: data,
+    isLoading,
+    isError: error,
+    mutateVehicles: mutate,
+  };
+}
+
 export function useVehicles(query?: string, page?: number) {
   if (!page && !query) {
     const { data, error, isLoading, mutate } = useSWR('/api/vehicles', fetcher);
@@ -61,6 +74,21 @@ export function useVehicles(query?: string, page?: number) {
     };
   }
 }
+
+export function useVehicleInspections(vehicleId: string) {
+  const { data, error, isLoading, mutate } = useSWR(
+    `/api/vehicles/${vehicleId}/inspections`,
+    fetcher
+  );
+
+  return {
+    inspections: data,
+    isLoading,
+    isError: error,
+    mutateInspections: mutate,
+  };
+}
+
 export function useTotalVehicles() {
   const { data, error, isLoading, mutate } = useSWR(
     '/api/count/vehicles',
@@ -74,6 +102,7 @@ export function useTotalVehicles() {
     mutateTotalVehicles: mutate,
   };
 }
+
 export function useTotalVehiclesPages(query?: string) {
   if (!query) {
     const { data, error, isLoading, mutate } = useSWR(
@@ -100,103 +129,126 @@ export function useTotalVehiclesPages(query?: string) {
   }
 }
 
-// AULAS
-
-export function useAulasById(id: string) {
+export function useInspectionById(id: string) {
   const { data, error, isLoading, mutate } = useSWR(
-    `/api/aula?id=${id}`,
+    `/api/inspections?id=${id}`,
     fetcher,
   );
 
   return {
-    aula: data,
+    inspection: data,
     isLoading,
     isError: error,
-    mutateAula: mutate,
+    mutateInspection: mutate,
   };
 }
 
-export function useAulas(query?: string, page?: number) {
+export function useInspections(query?: string, page?: number) {
   if (!page && !query) {
-    const { data, error, isLoading, mutate } = useSWR('/api/aula', fetcher);
+    const { data, error, isLoading, mutate } = useSWR('/api/inspections', fetcher);
     return {
-      aulas: data,
+      inspections: data,
       isLoading,
       isError: error,
-      mutateAulas: mutate,
+      mutateInspections: mutate,
     };
   } else if (page && !query) {
     const { data, error, isLoading, mutate } = useSWR(
-      `/api/aula?page=${page}`,
+      `/api/inspections?page=${page}`,
       fetcher,
     );
     return {
-      aulas: data,
+      inspections: data,
       isLoading,
       isError: error,
-      mutateAulas: mutate,
+      mutateInspections: mutate,
     };
   } else if (query && !page) {
     const { data, error, isLoading, mutate } = useSWR(
-      `/api/aula?query=${query}`,
+      `/api/inspections?query=${query}`,
       fetcher,
     );
     return {
-      aulas: data,
+      inspections: data,
       isLoading,
       isError: error,
-      mutateAulas: mutate,
+      mutateInspections: mutate,
     };
   } else {
     const { data, error, isLoading, mutate } = useSWR(
-      `/api/aula?page=${page}&query=${query}`,
+      `/api/inspections?page=${page}&query=${query}`,
       fetcher,
     );
     return {
-      aulas: data,
+      inspections: data,
       isLoading,
       isError: error,
-      mutateAulas: mutate,
+      mutateInspections: mutate,
     };
   }
 }
 
-export function useTotalAulas() {
+export function useVehiclePendingInspections(vehicleId: string) {
   const { data, error, isLoading, mutate } = useSWR(
-    '/api/count/aula',
+    `/api/vehicles/${vehicleId}/pending-inspections`,
+    fetcher
+  );
+
+  return {
+    pendingInspections: data,
+    isLoading,
+    isError: error,
+    mutatePendingInspections: mutate,
+  };
+}
+
+export function useTotalInspections() {
+  const { data, error, isLoading, mutate } = useSWR(
+    '/api/count/inspections',
     fetcher,
   );
 
   return {
-    totalAulas: data,
+    totalInspections: data,
     isLoading,
     isError: error,
-    mutateTotalAulas: mutate,
+    mutateTotalInspections: mutate,
   };
 }
 
-export function useTotalAulasPages(query?: string) {
+export function useTotalInspectionsPages(query?: string) {
   if (!query) {
     const { data, error, isLoading, mutate } = useSWR(
-      '/api/count/aula/pages',
+      '/api/count/inspections/pages',
       fetcher,
     );
     return {
-      totalAulasPages: data,
+      totalInspectionsPages: data,
       isLoading,
       isError: error,
-      mutateTotalAulasPages: mutate,
+      mutateTotalInspectionsPages: mutate,
     };
   } else {
     const { data, error, isLoading, mutate } = useSWR(
-      `/api/count/aula/pages?query=${query}`,
+      `/api/count/inspections/pages?query=${query}`,
       fetcher,
     );
     return {
-      totalAulasPages: data,
+      totalInspectionsPages: data,
       isLoading,
       isError: error,
-      mutateTotalAulasPages: mutate,
+      mutateTotalInspectionsPages: mutate,
     };
   }
+}
+
+export function useInspectionStats() {
+  const { data, error, isLoading, mutate } = useSWR('/api/stats/inspections', fetcher);
+
+  return {
+    stats: data,
+    isLoading,
+    isError: error,
+    mutateStats: mutate,
+  };
 }
