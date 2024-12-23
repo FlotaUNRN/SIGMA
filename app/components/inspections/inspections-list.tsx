@@ -4,7 +4,7 @@ import Search from '@/app/components/search';
 import { useState } from 'react';
 import { CreateInspectionForm } from './create-form';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardHeader, CardBody } from '@nextui-org/react';
+import { Card, CardHeader, CardBody, Image } from '@nextui-org/react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTotalInspectionsPages, useInspections } from '@/hooks/swr-hooks';
@@ -30,6 +30,32 @@ export default function InspectionsList({
 
   const data = inspections ?? [];
   const [activeForm, setActiveForm] = useState(false);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+    case 'Completado':
+      return 'text-success bg-success-50';
+    case 'En Proceso':
+      return 'text-warning bg-warning-50';
+    case 'Pendiente':
+      return 'text-danger bg-danger-50';
+    default:
+      return 'text-default bg-default-50';
+    }
+  };
+  
+  const getComponentStatus = (status: string) => {
+    switch (status) {
+    case 'OK':
+      return 'text-success bg-success-50';
+    case 'Requiere Atención':
+      return 'text-danger bg-danger-50';
+    case 'Atención Futura':
+      return 'text-warning bg-warning-50';
+    default:
+      return 'text-default bg-default-50';
+    }
+  };
 
   return (
     <>
@@ -88,24 +114,65 @@ export default function InspectionsList({
         {data.map((inspection: Inspection) => (
           <Card className="py-4" key={inspection.id}>
             <CardHeader className="flex-col items-start px-4 pb-0 pt-2">
-              <p className="text-tiny font-bold uppercase">
-                Código: {inspection.reference_code}
-              </p>
-              <small className="text-default-500">
-                Fecha: {format(new Date(inspection.inspection_date), 'dd/MM/yyyy')}
-              </small>
-              <h4 className="text-large font-bold">
-                Estado: {inspection.status}
-              </h4>
+              <div className="flex w-full justify-between">
+                <div>
+                  <p className="text-tiny font-bold uppercase">
+                    {inspection.model}
+                  </p>
+                  <small className="text-default-500">
+                    Patente: {inspection.license_plate}
+                  </small>
+                </div>
+                <span className={`rounded-full px-2 py-1 text-xs ${getStatusColor(inspection.status)}`}>
+                  {inspection.status}
+                </span>
+              </div>
             </CardHeader>
+
             <CardBody className="px-4 py-2">
-              <p>Odómetro: {inspection.odometer_reading} km</p>
-              {inspection.notes && (
-                <p className="text-small text-default-500">
-                  Notas: {inspection.notes}
+              <div className="space-y-2">
+                <p className="text-small">
+                  <span className="font-semibold">Fecha:</span> {format(new Date(inspection.inspection_date), 'dd/MM/yyyy HH:mm')}
                 </p>
-              )}
+                <p className="text-small">
+                  <span className="font-semibold">Odómetro:</span> {inspection.odometer_reading} km
+                </p>
+                
+                <div className="mt-2">
+                  <p className="text-small font-semibold">Estado de Componentes Críticos:</p>
+                  <div className="grid grid-cols-2 gap-1 mt-1">
+                    <p className="text-xs">
+                      <span className={`inline-block rounded-full px-2 ${getComponentStatus(inspection.engine_oil_status)}`}>
+                        Aceite: {inspection.engine_oil_status}
+                      </span>
+                    </p>
+                    <p className="text-xs">
+                      <span className={`inline-block rounded-full px-2 ${getComponentStatus(inspection.brake_fluid_status)}`}>
+                        Frenos: {inspection.brake_fluid_status}
+                      </span>
+                    </p>
+                    <p className="text-xs">
+                      <span className={`inline-block rounded-full px-2 ${getComponentStatus(inspection.coolant_status)}`}>
+                        Refrigerante: {inspection.coolant_status}
+                      </span>
+                    </p>
+                    <p className="text-xs">
+                      <span className={`inline-block rounded-full px-2 ${getComponentStatus(inspection.transmission_status)}`}>
+                        Transmisión: {inspection.transmission_status}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                
+                {inspection.notes && (
+                  <div className="mt-2">
+                    <p className="text-small font-semibold">Notas:</p>
+                    <p className="text-xs text-default-500">{inspection.notes}</p>
+                  </div>
+                )}
+              </div>
             </CardBody>
+
             <CardFooter className="flex justify-between px-4 pt-2">
               <Link href={`/dashboard/inspections/${inspection.id}`}>
                 <Button color="success" variant="light" size="sm">
@@ -131,11 +198,6 @@ export default function InspectionsList({
           color="primary"
           page={currentPage}
           total={totalInspectionsPages}
-          classNames={{
-            item: 'bg-background',
-            prev: 'bg-background',
-            next: 'bg-background',
-          }}
           onChange={(page) => {
             const params = new URLSearchParams(searchParams);
             params.set('page', page?.toString());

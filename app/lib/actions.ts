@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 'use server';
 
 import { AuthError } from 'next-auth';
@@ -17,10 +16,10 @@ export async function authenticate(
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
-        case 'CredentialsSignin':
-          return 'Credenciales invalidas';
-        default:
-          return 'Algo salió mal :(';
+      case 'CredentialsSignin':
+        return 'Credenciales invalidas';
+      default:
+        return 'Algo salió mal :(';
       }
     }
     throw error;
@@ -136,7 +135,10 @@ const InspectionFormSchema = z.object({
   vehicle_id: z.string(),
   reference_code: z.string().min(1, 'El código de referencia es requerido'),
   inspection_date: z.string().min(1, 'La fecha es requerida'),
-  odometer_reading: z.number().min(0, 'La lectura del odómetro debe ser positiva'),
+  odometer_reading: z.preprocess(
+    (val) => Number(val), // convertir a número
+    z.number().min(0, 'La lectura del odómetro debe ser positiva')
+  ),
   status: z.enum(['Completado', 'Pendiente', 'En Proceso']),
   front_image_url: z.string().optional(),
   driver_side_image_url: z.string().optional(),
