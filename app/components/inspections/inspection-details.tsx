@@ -30,20 +30,20 @@ export default function InspectionDetails({ id }: { id: string }) {
     let statusClasses = '';
 
     switch (status) {
-      case 'OK':
-        statusClasses = 'bg-success-100 text-success-700';
-        break;
-      case 'Requiere Atención':
-        statusClasses = 'bg-danger-100 text-danger-700';
-        break;
-      case 'Atención Futura':
-        statusClasses = 'bg-warning-100 text-warning-700';
-        break;
-      case 'Lleno':
-        statusClasses = 'bg-primary-100 text-primary-700';
-        break;
-      default:
-        statusClasses = 'bg-gray-100 text-gray-700';
+    case 'OK':
+      statusClasses = 'bg-success-100 text-success-700';
+      break;
+    case 'Requiere Atención':
+      statusClasses = 'bg-danger-100 text-danger-700';
+      break;
+    case 'Atención Futura':
+      statusClasses = 'bg-warning-100 text-warning-700';
+      break;
+    case 'Lleno':
+      statusClasses = 'bg-primary-100 text-primary-700';
+      break;
+    default:
+      statusClasses = 'bg-gray-100 text-gray-700';
     }
 
     return <span className={`${baseClasses} ${statusClasses}`}>{status}</span>;

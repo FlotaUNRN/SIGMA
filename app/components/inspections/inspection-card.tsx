@@ -23,27 +23,27 @@ const InspectionCard: React.FC<InspectionCardProps> = ({
 }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Completado':
-        return 'text-success bg-success-50';
-      case 'En Proceso':
-        return 'text-warning bg-warning-50';
-      case 'Pendiente':
-        return 'text-danger bg-danger-50';
-      default:
-        return 'text-default bg-default-50';
+    case 'Completado':
+      return 'text-success bg-success-50';
+    case 'En Proceso':
+      return 'text-warning bg-warning-50';
+    case 'Pendiente':
+      return 'text-danger bg-danger-50';
+    default:
+      return 'text-default bg-default-50';
     }
   };
 
   const getComponentStatus = (status: string) => {
     switch (status) {
-      case 'OK':
-        return 'text-success bg-success-50';
-      case 'Requiere Atención':
-        return 'text-danger bg-danger-50';
-      case 'Atención Futura':
-        return 'text-warning bg-warning-50';
-      default:
-        return 'text-default bg-default-50';
+    case 'OK':
+      return 'text-success bg-success-50';
+    case 'Requiere Atención':
+      return 'text-danger bg-danger-50';
+    case 'Atención Futura':
+      return 'text-warning bg-warning-50';
+    default:
+      return 'text-default bg-default-50';
     }
   };
 
