@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 export type Admin = {
     id: string;
     name: string;
