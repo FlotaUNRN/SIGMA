@@ -7,7 +7,8 @@ import clsx from 'clsx';
 import {
   TruckIcon,
   HomeIcon,
-  WrenchScrewdriverIcon
+  WrenchScrewdriverIcon,
+  UserGroupIcon
 } from '@heroicons/react/24/outline';
 
 const links = [
@@ -22,6 +23,9 @@ const links = [
     href: '/dashboard/inspections',
     icon: WrenchScrewdriverIcon,
   },
+  { name: 'Empleados', 
+    href: '/dashboard/employees', 
+    icon: UserGroupIcon },
 ];
 
 export default function NavLinks() {

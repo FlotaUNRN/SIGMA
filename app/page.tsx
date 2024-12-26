@@ -1,5 +1,5 @@
-import { Button } from '@nextui-org/react';
-import Link from 'next/link';
+// import { Button } from '@nextui-org/react';
+// import Link from 'next/link';
 import Footer from './components/footer';
 import Header from './components/header';
 
@@ -16,15 +16,6 @@ export default function Home() {
             Sistema Integral de Gestión y Monitoreo Automotriz
           </span>
         </div>
-        <Link href="/">
-          <Button
-            variant="bordered"
-            size="lg"
-            className="w-48 border-foreground text-foreground"
-          >
-            Ver más
-          </Button>
-        </Link>
         <div
           style={{
             position: 'absolute',

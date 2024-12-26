@@ -8,15 +8,16 @@ export type Admin = {
   };
 
 export type Vehicle = {
-  id: string;
-  vin: string;
-  make: string;
-  model: string;
-  year: string;
-  color: string;
-  license_plate: string;
-  photo_url: string;
-};
+    id: string;
+    vin: string;
+    make: string;
+    model: string;
+    year: string;
+    color: string;
+    license_plate: string;
+    photo_url: string;
+    assigned?: boolean; 
+  };
 
 export type Inspection = {
   license_plate: ReactNode;
@@ -53,4 +54,35 @@ export type Inspection = {
   front_wiper_status: string;
   rear_wiper_status: string;
   notes?: string;
+};
+
+export type Employee = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  dni: string;
+  license_number: string;
+  license_type: string;
+  license_expiry_date: string;
+  email: string | null;
+  phone: string | null;
+  department: string;
+  position: string;
+  status: 'Activo' | 'Inactivo' | 'Licencia';
+  photo_url: string | null;
+};
+
+export type VehicleAssignment = {
+  id: string;
+  vehicle_id: string;
+  employee_id: string;
+  start_date: string;
+  end_date: string | null;
+  status: 'Activa' | 'Finalizada' | 'Cancelada';
+  notes: string | null;
+  vehicle?: {
+    make: string;
+    model: string;
+    license_plate: string;
+  };
 };
