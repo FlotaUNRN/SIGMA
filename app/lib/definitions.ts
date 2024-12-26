@@ -17,6 +17,7 @@ export type Vehicle = {
 };
 
 export type Inspection = {
+  license_plate: ReactNode;
   id: string;
   vehicle_id: string;
   reference_code: string;

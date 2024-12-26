@@ -1,16 +1,14 @@
 'use client';
-import { Button, CardFooter, Pagination, Spinner } from '@nextui-org/react';
+import { Button, Pagination, Spinner } from '@nextui-org/react';
 import Search from '@/app/components/search';
 import { useState } from 'react';
 import { CreateInspectionForm } from './create-form';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardHeader, CardBody } from '@nextui-org/react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTotalInspectionsPages, useInspections } from '@/hooks/swr-hooks';
-import { DeleteInspectionButton } from './delete-button';
-import { format } from 'date-fns';
 import { Inspection } from '@/app/lib/definitions';
+import InspectionCard from './inspection-card';
 
 export default function InspectionsList({
   searchParams,
@@ -31,39 +29,16 @@ export default function InspectionsList({
   const data = inspections ?? [];
   const [activeForm, setActiveForm] = useState(false);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-    case 'Completado':
-      return 'text-success bg-success-50';
-    case 'En Proceso':
-      return 'text-warning bg-warning-50';
-    case 'Pendiente':
-      return 'text-danger bg-danger-50';
-    default:
-      return 'text-default bg-default-50';
-    }
-  };
-  
-  const getComponentStatus = (status: string) => {
-    switch (status) {
-    case 'OK':
-      return 'text-success bg-success-50';
-    case 'Requiere Atención':
-      return 'text-danger bg-danger-50';
-    case 'Atención Futura':
-      return 'text-warning bg-warning-50';
-    default:
-      return 'text-default bg-default-50';
-    }
-  };
-
   return (
-    <>
+    <div className="flex flex-col gap-4">
       <div className="flex flex-col items-center justify-between gap-2 md:flex-row">
-        <Search placeholder="Buscar inspecciones" />
-        <div className="mb-2 md:m-0">
+        <div className="w-full md:w-96">
+          <Search placeholder="Buscar inspecciones" />
+        </div>
+        <div className="w-full md:w-auto">
           <Button
             color="success"
+            className="w-full md:w-auto"
             onClick={() => setActiveForm(!activeForm)}
             endContent={
               <svg
@@ -108,89 +83,25 @@ export default function InspectionsList({
         )}
       </AnimatePresence>
 
-      {isLoading && <Spinner className='mt-5 w-full justify-center'/>}
-      
-      <div className="relative mt-3 grid grid-cols-1 gap-4 overflow-x-auto overflow-y-auto sm:rounded-lg md:grid-cols-2 lg:grid-cols-3">
-        {data.map((inspection: Inspection) => (
-          <Card className="py-4" key={inspection.id}>
-            <CardHeader className="flex-col items-start px-4 pb-0 pt-2">
-              <div className="flex w-full justify-between">
-                <div>
-                  <p className="text-tiny font-bold uppercase">
-                    {inspection.reference_code}
-                  </p>
-                  <small className="text-default-500">
-                    ID: {inspection.vehicle_id}
-                  </small>
-                </div>
-                <span className={`rounded-full px-2 py-1 text-xs ${getStatusColor(inspection.status)}`}>
-                  {inspection.status}
-                </span>
-              </div>
-            </CardHeader>
+      {isLoading ? (
+        <div className="flex w-full justify-center p-6">
+          <Spinner size="lg" color="primary" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
+          {data.map((inspection: Inspection) => (
+            <InspectionCard
+              key={inspection.id}
+              inspection={inspection}
+              searchParams={searchParams}
+              setPending={setPending}
+              pending={pending}
+            />
+          ))}
+        </div>
+      )}
 
-            <CardBody className="px-4 py-2">
-              <div className="space-y-2">
-                <p className="text-small">
-                  <span className="font-semibold">Fecha:</span> {format(new Date(inspection.inspection_date), 'dd/MM/yyyy HH:mm')}
-                </p>
-                <p className="text-small">
-                  <span className="font-semibold">Odómetro:</span> {inspection.odometer_reading} km
-                </p>
-                
-                <div className="mt-2">
-                  <p className="text-small font-semibold">Estado de Componentes Críticos:</p>
-                  <div className="grid grid-cols-2 gap-1 mt-1">
-                    <p className="text-xs">
-                      <span className={`inline-block rounded-full px-2 ${getComponentStatus(inspection.engine_oil_status)}`}>
-                        Aceite: {inspection.engine_oil_status}
-                      </span>
-                    </p>
-                    <p className="text-xs">
-                      <span className={`inline-block rounded-full px-2 ${getComponentStatus(inspection.brake_fluid_status)}`}>
-                        Frenos: {inspection.brake_fluid_status}
-                      </span>
-                    </p>
-                    <p className="text-xs">
-                      <span className={`inline-block rounded-full px-2 ${getComponentStatus(inspection.coolant_status)}`}>
-                        Refrigerante: {inspection.coolant_status}
-                      </span>
-                    </p>
-                    <p className="text-xs">
-                      <span className={`inline-block rounded-full px-2 ${getComponentStatus(inspection.transmission_status)}`}>
-                        Transmisión: {inspection.transmission_status}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-                
-                {inspection.notes && (
-                  <div className="mt-2">
-                    <p className="text-small font-semibold">Notas:</p>
-                    <p className="text-xs text-default-500">{inspection.notes}</p>
-                  </div>
-                )}
-              </div>
-            </CardBody>
-
-            <CardFooter className="flex justify-between px-4 pt-2">
-              <Link href={`/dashboard/inspections/${inspection.id}`}>
-                <Button color="success" variant="light" size="sm">
-                  Ver detalles
-                </Button>
-              </Link>
-              <DeleteInspectionButton
-                inspection={inspection}
-                searchParams={searchParams}
-                setPending={setPending}
-                isDisabled={pending}
-              />
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-
-      <div className="flex w-full justify-center mt-3">
+      <div className="flex w-full justify-center">
         <Pagination
           isCompact
           showControls
@@ -199,17 +110,17 @@ export default function InspectionsList({
           page={currentPage}
           total={totalInspectionsPages}
           onChange={(page) => {
-            const params = new URLSearchParams();
-            if (searchParams?.query) {
-              params.set('query', searchParams.query);
-            }
-            if (page) {
-              params.set('page', page.toString());
-            }
+            const params = new URLSearchParams(searchParams);
+            params.set('page', page.toString());
             replace(`${pathname}?${params.toString()}`);
+          }}
+          classNames={{
+            wrapper: 'gap-0 overflow-visible h-8',
+            item: 'w-8 h-8',
+            cursor: 'bg-primary',
           }}
         />
       </div>
-    </>
+    </div>
   );
 }

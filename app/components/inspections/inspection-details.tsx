@@ -30,20 +30,20 @@ export default function InspectionDetails({ id }: { id: string }) {
     let statusClasses = '';
 
     switch (status) {
-    case 'OK':
-      statusClasses = 'bg-success-100 text-success-700';
-      break;
-    case 'Requiere Atención':
-      statusClasses = 'bg-danger-100 text-danger-700';
-      break;
-    case 'Atención Futura':
-      statusClasses = 'bg-warning-100 text-warning-700';
-      break;
-    case 'Lleno':
-      statusClasses = 'bg-primary-100 text-primary-700';
-      break;
-    default:
-      statusClasses = 'bg-gray-100 text-gray-700';
+      case 'OK':
+        statusClasses = 'bg-success-100 text-success-700';
+        break;
+      case 'Requiere Atención':
+        statusClasses = 'bg-danger-100 text-danger-700';
+        break;
+      case 'Atención Futura':
+        statusClasses = 'bg-warning-100 text-warning-700';
+        break;
+      case 'Lleno':
+        statusClasses = 'bg-primary-100 text-primary-700';
+        break;
+      default:
+        statusClasses = 'bg-gray-100 text-gray-700';
     }
 
     return <span className={`${baseClasses} ${statusClasses}`}>{status}</span>;
@@ -51,30 +51,32 @@ export default function InspectionDetails({ id }: { id: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <Link href="/dashboard/inspections">
-              <Button
-                color="primary"
-                variant="ghost"
-                startContent={<ChevronLeftIcon className="h-5 w-5" />}
-              >
-                Volver
-              </Button>
-            </Link>
-            <h1 className="text-2xl font-bold">
-              Inspección #{inspection.reference_code}
-            </h1>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center">
+          <div className="flex items-center justify-between gap-4 md:flex-1">
+            <div>
+              <h1 className="text-xl font-bold md:text-2xl">
+                Inspección #{inspection.reference_code}
+                <Link href="/dashboard/inspections" className="ml-3 inline-flex">
+                  <Button
+                    isIconOnly
+                    color="danger"
+                    variant="ghost"
+                    size="sm"
+                    aria-label="Volver"
+                  >
+                    <ChevronLeftIcon className="h-5 w-5" />
+                  </Button>
+                </Link>
+              </h1>
+              {vehicle && (
+                <p className="mt-1 text-sm text-foreground/80 md:text-lg">
+                  {vehicle.make} {vehicle.model} - {vehicle.license_plate}
+                </p>
+              )}
+            </div>
           </div>
-          {vehicle && (
-            <p className="mt-2 text-lg text-foreground/80">
-              {vehicle.make} {vehicle.model} - {vehicle.license_plate}
-            </p>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          <span className={`rounded-full px-3 py-1 text-sm font-medium ${
+          <span className={`self-start rounded-full px-3 py-1 text-sm font-medium whitespace-nowrap md:self-center ${
             inspection.status === 'Completado' ? 'bg-success-100 text-success-700' :
               inspection.status === 'En Proceso' ? 'bg-primary-100 text-primary-700' :
                 'bg-warning-100 text-warning-700'

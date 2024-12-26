@@ -57,7 +57,7 @@ export async function createVehicle(formData: FormData): Promise<string> {
     const result = await sql`
       INSERT INTO vehicles (license_plate, make, model, year, vin, color, photo_url)
       VALUES (${license_plate}, ${make}, ${model}, ${year}, ${vin}, ${color}, ${photo_url})
-  `;
+    `;
 
     if (result.rows[0].result === 1) {
       return Promise.reject({ message: 'El vehículo ya existe.' });
@@ -78,6 +78,7 @@ export async function updateVehicle(
   formData: FormData,
 ): Promise<string> {
   const validatedFields = VehicleFormSchema.safeParse({
+    id,
     vin: formData.get('vin'),
     make: formData.get('make'),
     model: formData.get('model'),
@@ -133,7 +134,7 @@ export async function deleteVehicle(id: string): Promise<{ message: string }> {
 const InspectionFormSchema = z.object({
   id: z.string(),
   vehicle_id: z.string(),
-  reference_code: z.string().min(1, 'El código de referencia es requerido'),
+  reference_code: z.string().optional(), // Ahora es opcional porque será autogenerado
   inspection_date: z.string().min(1, 'La fecha es requerida'),
   odometer_reading: z.preprocess(
     (val) => Number(val), // convertir a número
@@ -169,7 +170,7 @@ const InspectionFormSchema = z.object({
   notes: z.string().optional(),
 });
 
-const CreateInspection = InspectionFormSchema.omit({ id: true });
+const CreateInspection = InspectionFormSchema.omit({ id: true, reference_code: true });
 
 export async function createInspection(formData: FormData): Promise<string> {
   const validatedFields = CreateInspection.safeParse(
@@ -184,6 +185,26 @@ export async function createInspection(formData: FormData): Promise<string> {
   }
 
   try {
+    // Generar el código de referencia
+    const currentYear = new Date().getFullYear();
+    const lastInspection = await sql`
+      SELECT reference_code 
+      FROM inspections 
+      WHERE reference_code LIKE ${`INSP-${currentYear}-%`}
+      ORDER BY reference_code DESC 
+      LIMIT 1
+    `;
+
+    // Generar el nuevo número secuencial
+    let sequentialNumber = 1;
+    if (lastInspection.rows.length > 0) {
+      const lastNumber = parseInt(lastInspection.rows[0].reference_code.split('-')[2]);
+      sequentialNumber = lastNumber + 1;
+    }
+
+    // Formatear el nuevo código de referencia
+    const reference_code = `INSP-${currentYear}-${String(sequentialNumber).padStart(3, '0')}`;
+
     await sql`
       INSERT INTO inspections (
         vehicle_id, reference_code, inspection_date, odometer_reading, status,
@@ -194,7 +215,7 @@ export async function createInspection(formData: FormData): Promise<string> {
         rear_left_tire_status, rear_right_tire_status, emergency_brake_status, front_wiper_status,
         rear_wiper_status, notes
       ) VALUES (
-        ${validatedFields.data.vehicle_id}, ${validatedFields.data.reference_code}, ${validatedFields.data.inspection_date},
+        ${validatedFields.data.vehicle_id}, ${reference_code}, ${validatedFields.data.inspection_date},
         ${validatedFields.data.odometer_reading}, ${validatedFields.data.status}, ${validatedFields.data.engine_oil_status},
         ${validatedFields.data.transmission_status}, ${validatedFields.data.differential_status}, ${validatedFields.data.coolant_status},
         ${validatedFields.data.brake_fluid_status}, ${validatedFields.data.power_steering_status}, ${validatedFields.data.wiper_fluid_status},
@@ -232,7 +253,6 @@ export async function updateInspection(
 
   const { 
     vehicle_id,
-    reference_code,
     inspection_date,
     odometer_reading,
     status,
@@ -265,7 +285,6 @@ export async function updateInspection(
       UPDATE inspections
       SET 
         vehicle_id = ${vehicle_id},
-        reference_code = ${reference_code},
         inspection_date = ${inspection_date},
         odometer_reading = ${odometer_reading},
         status = ${status},
