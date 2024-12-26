@@ -26,7 +26,7 @@ const componentStatusOptions = ['OK', 'Requiere Atención', 'Atención Futura'];
 
 export const InspectionForm = ({
   vehicleId,
-  onCancel,
+  // onCancel,
   setActiveForm,
   searchParams,
 }: InspectionFormProps) => {
@@ -138,26 +138,26 @@ export const InspectionForm = ({
         {/* Información básica */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           <Input
-              label="Fecha"
-              name="inspection_date"
-              type="datetime-local"
-              variant="bordered"
-              labelPlacement="outside"
-              placeholder=" "
-              value={formData.inspection_date}
-              onValueChange={(value) => {
-                setFormData({ ...formData, inspection_date: value });
-                if (trySubmit) validateDate(value);
-              }}
-              isRequired
-              isInvalid={trySubmit && dateError}
-              errorMessage={dateError ? "Ingrese una fecha válida" : ""}
-              description="Ingrese la fecha y hora en que se realiza la inspección"
-              classNames={{
-                label: "text-default-600 font-normal",
-                input: "font-normal"
-              }}
-            />
+            label='Fecha'
+            name='inspection_date'
+            type='datetime-local'
+            variant='bordered'
+            labelPlacement='outside'
+            placeholder=' '
+            value={formData.inspection_date}
+            onValueChange={(value) => {
+              setFormData({ ...formData, inspection_date: value });
+              if (trySubmit) validateDate(value);
+            }}
+            isRequired
+            isInvalid={trySubmit && dateError}
+            errorMessage={dateError ? 'Ingrese una fecha válida' : ''}
+            description='Ingrese la fecha y hora en que se realiza la inspección'
+            classNames={{
+              label: 'text-default-600 font-normal',
+              input: 'font-normal'
+            }}
+          />
 
           <Input
             label="Lectura del Odómetro"
@@ -173,7 +173,7 @@ export const InspectionForm = ({
             placeholder="Ej: 50000"
             isRequired
             isInvalid={trySubmit && odometerError}
-            errorMessage={odometerError ? "Ingrese un kilometraje válido" : ""}
+            errorMessage={odometerError ? 'Ingrese un kilometraje válido' : ''}
             description="Ingrese el kilometraje actual del vehículo"
             endContent={
               <div className="pointer-events-none flex items-center">
@@ -213,8 +213,8 @@ export const InspectionForm = ({
               value={formData.front_image_url}
               onValueChange={(value) => setFormData({ ...formData, front_image_url: value })}
               classNames={{
-                label: "text-default-600 font-normal",
-                input: "font-normal"
+                label: 'text-default-600 font-normal',
+                input: 'font-normal'
               }}
             />
             <Input
@@ -227,8 +227,8 @@ export const InspectionForm = ({
               value={formData.driver_side_image_url}
               onValueChange={(value) => setFormData({ ...formData, driver_side_image_url: value })}
               classNames={{
-                label: "text-default-600 font-normal",
-                input: "font-normal"
+                label: 'text-default-600 font-normal',
+                input: 'font-normal'
               }}
             />
             <Input
@@ -241,8 +241,8 @@ export const InspectionForm = ({
               value={formData.passenger_side_image_url}
               onValueChange={(value) => setFormData({ ...formData, passenger_side_image_url: value })}
               classNames={{
-                label: "text-default-600 font-normal",
-                input: "font-normal"
+                label: 'text-default-600 font-normal',
+                input: 'font-normal'
               }}
             />
             <Input
@@ -255,8 +255,8 @@ export const InspectionForm = ({
               value={formData.back_image_url}
               onValueChange={(value) => setFormData({ ...formData, back_image_url: value })}
               classNames={{
-                label: "text-default-600 font-normal",
-                input: "font-normal"
+                label: 'text-default-600 font-normal',
+                input: 'font-normal'
               }}
             />
           </div>
