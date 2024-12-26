@@ -4,13 +4,13 @@ import Search from '@/app/components/search';
 import { useState } from 'react';
 import { CreateInspectionForm } from './create-form';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardHeader, CardBody, Image } from '@nextui-org/react';
+import { Card, CardHeader, CardBody } from '@nextui-org/react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTotalInspectionsPages, useInspections } from '@/hooks/swr-hooks';
 import { DeleteInspectionButton } from './delete-button';
-import { Inspection } from '@/app/lib/definitions';
 import { format } from 'date-fns';
+import { Inspection } from '@/app/lib/definitions';
 
 export default function InspectionsList({
   searchParams,
@@ -117,10 +117,10 @@ export default function InspectionsList({
               <div className="flex w-full justify-between">
                 <div>
                   <p className="text-tiny font-bold uppercase">
-                    {inspection.model}
+                    {inspection.reference_code}
                   </p>
                   <small className="text-default-500">
-                    Patente: {inspection.license_plate}
+                    ID: {inspection.vehicle_id}
                   </small>
                 </div>
                 <span className={`rounded-full px-2 py-1 text-xs ${getStatusColor(inspection.status)}`}>
@@ -199,8 +199,13 @@ export default function InspectionsList({
           page={currentPage}
           total={totalInspectionsPages}
           onChange={(page) => {
-            const params = new URLSearchParams(searchParams);
-            params.set('page', page?.toString());
+            const params = new URLSearchParams();
+            if (searchParams?.query) {
+              params.set('query', searchParams.query);
+            }
+            if (page) {
+              params.set('page', page.toString());
+            }
             replace(`${pathname}?${params.toString()}`);
           }}
         />
