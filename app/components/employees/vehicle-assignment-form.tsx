@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import { Button, Card, CardBody, CardHeader, Input, Select, SelectItem } from '@nextui-org/react';
-import { useAllVehicles } from '@/hooks/useAllVehicles';
+import { useAvailableVehicles } from '@/hooks/useAvailableVehicles';
 import { createVehicleAssignment } from '@/app/lib/actions';
+import { useEmployeeVehicleAssignments } from '@/hooks/useEmployees';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 
@@ -13,7 +14,9 @@ interface VehicleAssignmentFormProps {
 }
 
 export function VehicleAssignmentForm({ employeeId, onClose }: VehicleAssignmentFormProps) {
-  const { vehicles, isLoading } = useAllVehicles();
+  const { vehicles, isLoading, mutateVehicles } = useAvailableVehicles();
+  const { mutateAssignments } = useEmployeeVehicleAssignments(employeeId);
+  
   const [formData, setFormData] = useState({
     vehicle_id: '',
     start_date: format(new Date(), 'yyyy-MM-dd'),
@@ -53,6 +56,8 @@ export function VehicleAssignmentForm({ employeeId, onClose }: VehicleAssignment
     toast.promise(
       createVehicleAssignment(form)
         .then(() => {
+          mutateVehicles(); 
+          mutateAssignments();
           onClose();
         }),
       {
@@ -65,7 +70,7 @@ export function VehicleAssignmentForm({ employeeId, onClose }: VehicleAssignment
 
   if (isLoading) {
     return (
-      <Card className="p-4">
+      <Card className="p-6">
         <CardBody>
           <div className="flex justify-center">
             Cargando vehículos disponibles...
@@ -75,11 +80,11 @@ export function VehicleAssignmentForm({ employeeId, onClose }: VehicleAssignment
     );
   }
 
-  const availableVehicles = vehicles?.filter(vehicle => !vehicle.assigned);
+  const availableVehicles = vehicles || [];
 
   return (
-    <Card className="p-4">
-      <CardHeader className="flex justify-between items-center">
+    <Card className="p-6">
+      <CardHeader className="flex justify-between items-center pb-6"> {/* Increased from pb-4 */}
         <h3 className="text-xl font-semibold">Asignar Vehículo</h3>
         <Button
           color="danger"
@@ -91,59 +96,97 @@ export function VehicleAssignmentForm({ employeeId, onClose }: VehicleAssignment
         </Button>
       </CardHeader>
       <CardBody>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Select
-            label="Vehículo"
-            isRequired
-            value={formData.vehicle_id}
-            onChange={(e) => setFormData({ ...formData, vehicle_id: e.target.value })}
-            isInvalid={validationErrors.vehicle_id}
-            errorMessage={validationErrors.vehicle_id && 'Selecciona un vehículo'}
-          >
-            {(availableVehicles || []).map((vehicle) => (
-              <SelectItem key={vehicle.id} value={vehicle.id}>
-                {vehicle.make} {vehicle.model} - {vehicle.license_plate}
-              </SelectItem>
-            ))}
-          </Select>
+        <form onSubmit={handleSubmit} className="space-y-12"> {/* Increased from space-y-8 */}
+          <div className="space-y-12"> {/* Increased from space-y-8 */}
+            <Select
+              label="Vehículo"
+              labelPlacement="outside"
+              placeholder="Seleccionar vehículo"
+              isRequired
+              selectedKeys={formData.vehicle_id ? [formData.vehicle_id] : []}
+              onChange={(e) => setFormData({ ...formData, vehicle_id: e.target.value })}
+              isInvalid={validationErrors.vehicle_id}
+              errorMessage={validationErrors.vehicle_id && 'Selecciona un vehículo'}
+              classNames={{
+                label: 'pb-1', // Reduced from pb-3
+                trigger: 'h-13'
+              }}
+            >
+              {availableVehicles.map((vehicle) => (
+                <SelectItem 
+                  key={vehicle.id} 
+                  value={vehicle.id}
+                  textValue={`${vehicle.make} ${vehicle.model} - ${vehicle.license_plate}`}
+                >
+                  <div className="flex flex-col">
+                    <span className="text-medium">{vehicle.make} {vehicle.model}</span>
+                    <span className="text-small text-default-400">Patente: {vehicle.license_plate}</span>
+                  </div>
+                </SelectItem>
+              ))}
+            </Select>
 
-          <Input
-            type="date"
-            label="Fecha de inicio"
-            isRequired
-            value={formData.start_date}
-            onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-            isInvalid={validationErrors.start_date}
-            errorMessage={validationErrors.start_date && 'La fecha de inicio es requerida'}
-          />
+            <Input
+              type="date"
+              label="Fecha de inicio"
+              labelPlacement="outside"
+              placeholder="Seleccionar fecha"
+              isRequired
+              value={formData.start_date}
+              onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+              isInvalid={validationErrors.start_date}
+              errorMessage={validationErrors.start_date && 'La fecha de inicio es requerida'}
+              classNames={{
+                label: 'pb-1', // Reduced from pb-3
+                input: 'h-13'
+              }}
+            />
 
-          <Input
-            type="date"
-            label="Fecha de fin (opcional)"
-            value={formData.end_date}
-            onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-            min={formData.start_date}
-          />
+            <Input
+              type="date"
+              label="Fecha de fin (opcional)"
+              labelPlacement="outside"
+              placeholder="Seleccionar fecha"
+              value={formData.end_date}
+              onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
+              min={formData.start_date}
+              classNames={{
+                label: 'pb-1', // Reduced from pb-3
+                input: 'h-13'
+              }}
+            />
 
-          <Select
-            label="Estado"
-            isRequired
-            value={formData.status}
-            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-          >
-            <SelectItem key="Activa" value="Activa">Activa</SelectItem>
-            <SelectItem key="Finalizada" value="Finalizada">Finalizada</SelectItem>
-            <SelectItem key="Cancelada" value="Cancelada">Cancelada</SelectItem>
-          </Select>
+            <Select
+              label="Estado"
+              labelPlacement="outside"
+              placeholder="Seleccionar estado"
+              isRequired
+              selectedKeys={[formData.status]}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+              classNames={{
+                label: 'pb-1', // Reduced from pb-3
+                trigger: 'h-13'
+              }}
+            >
+              <SelectItem key="Activa" textValue="Activa">Activa</SelectItem>
+              <SelectItem key="Finalizada" textValue="Finalizada">Finalizada</SelectItem>
+              <SelectItem key="Cancelada" textValue="Cancelada">Cancelada</SelectItem>
+            </Select>
 
-          <Input
-            label="Notas"
-            placeholder="Notas adicionales sobre la asignación"
-            value={formData.notes}
-            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-          />
+            <Input
+              label="Notas"
+              labelPlacement="outside"
+              placeholder="Notas adicionales sobre la asignación"
+              value={formData.notes}
+              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              classNames={{
+                label: 'pb-1', // Reduced from pb-3
+                input: 'h-13'
+              }}
+            />
+          </div>
 
-          <div className="flex justify-end gap-2 pt-4">
+          <div className="flex justify-end gap-3 pt-8"> {/* Increased from pt-6 */}
             <Button
               color="danger"
               variant="light"
@@ -163,3 +206,4 @@ export function VehicleAssignmentForm({ employeeId, onClose }: VehicleAssignment
     </Card>
   );
 }
+

@@ -1,24 +1,5 @@
 import { ReactNode } from 'react';
 
-export type Admin = {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
-  };
-
-export type Vehicle = {
-    id: string;
-    vin: string;
-    make: string;
-    model: string;
-    year: string;
-    color: string;
-    license_plate: string;
-    photo_url: string;
-    assigned?: boolean; 
-  };
-
 export type Inspection = {
   license_plate: ReactNode;
   id: string;
@@ -56,6 +37,35 @@ export type Inspection = {
   notes?: string;
 };
 
+export type Vehicle = {
+  id: string;
+  vin: string;
+  make: string;
+  model: string;
+  year: string;
+  color: string;
+  license_plate: string;
+  photo_url: string;
+};
+
+export type VehicleAssignment = {
+  id: string;
+  vehicle_id: string;
+  employee_id: string;
+  start_date: string;
+  end_date: string | null;
+  status: 'Activa' | 'Finalizada' | 'Cancelada';
+  notes: string | null;
+  vehicle: {
+    make: string;
+    model: string;
+    license_plate: string;
+    photo_url?: string;
+  };
+  created_at?: string;
+  updated_at?: string;
+};
+
 export type Employee = {
   id: string;
   first_name: string;
@@ -70,19 +80,4 @@ export type Employee = {
   position: string;
   status: 'Activo' | 'Inactivo' | 'Licencia';
   photo_url: string | null;
-};
-
-export type VehicleAssignment = {
-  id: string;
-  vehicle_id: string;
-  employee_id: string;
-  start_date: string;
-  end_date: string | null;
-  status: 'Activa' | 'Finalizada' | 'Cancelada';
-  notes: string | null;
-  vehicle?: {
-    make: string;
-    model: string;
-    license_plate: string;
-  };
 };

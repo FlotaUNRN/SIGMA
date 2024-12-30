@@ -1,11 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Card, CardHeader, CardBody, CardFooter, Button } from '@nextui-org/react';
+import { Card, CardHeader, CardBody, CardFooter, Button, Divider } from '@nextui-org/react';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { Employee } from '@/app/lib/definitions';
+import { Employee, VehicleAssignment } from '@/app/lib/definitions';
 import { DeleteEmployeeButton } from './delete-button';
+import { useEmployeeVehicleAssignments } from '@/hooks/useEmployees';
 
 interface EmployeeCardProps {
   employee: Employee;
@@ -23,6 +24,8 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
   setPending,
   pending
 }) => {
+  const { assignments, isLoading: isLoadingAssignments } = useEmployeeVehicleAssignments(employee.id);
+
   const getStatusColor = (status: string) => {
     switch (status) {
     case 'Activo':
@@ -37,6 +40,10 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
   };
 
   const isLicenseExpired = new Date(employee.license_expiry_date) < new Date();
+
+  const activeAssignments = assignments?.filter((assignment: VehicleAssignment) => 
+    assignment.status === 'Activa'
+  ) || [];
 
   return (
     <Card className="w-full">
@@ -73,6 +80,28 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
               {employee.status}
             </span>
           </div>
+
+          {/* Vehicle assignments section */}
+          {!isLoadingAssignments && activeAssignments.length > 0 && (
+            <>
+              <Divider className="my-2" />
+              <div>
+                <span className="text-sm font-medium">Vehículos asignados:</span>
+                <div className="mt-1 space-y-1">
+                  {activeAssignments.map((assignment: VehicleAssignment) => (
+                    <div key={assignment.id} className="text-sm rounded-lg bg-default-100 p-2">
+                      <p className="font-medium">
+                        {assignment.vehicle?.make} {assignment.vehicle?.model}
+                      </p>
+                      <p className="text-default-500">
+                        Patente: {assignment.vehicle?.license_plate}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </CardBody>
       <CardFooter className="justify-between gap-2 px-4 pt-2">

@@ -18,9 +18,26 @@ export async function GET(
       FROM vehicle_assignments va
       JOIN vehicles v ON va.vehicle_id = v.id
       WHERE va.employee_id = ${params.id}
-      ORDER BY va.start_date DESC
+      ORDER BY 
+        CASE va.status 
+          WHEN 'Activa' THEN 1 
+          WHEN 'Finalizada' THEN 2 
+          ELSE 3 
+        END,
+        va.start_date DESC
     `;
-    return NextResponse.json(assignments.rows);
+
+    const formattedAssignments = assignments.rows.map(assignment => ({
+      ...assignment,
+      vehicle: {
+        make: assignment.make,
+        model: assignment.model,
+        license_plate: assignment.license_plate,
+        photo_url: assignment.photo_url
+      }
+    }));
+
+    return NextResponse.json(formattedAssignments);
   } catch (error) {
     console.error('Database Error:', error);
     return NextResponse.json(
