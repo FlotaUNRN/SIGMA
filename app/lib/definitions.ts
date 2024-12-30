@@ -1,5 +1,12 @@
 import { ReactNode } from 'react';
 
+export type Admin = {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+};
+
 export type Inspection = {
   license_plate: ReactNode;
   id: string;
