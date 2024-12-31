@@ -82,7 +82,6 @@ export const CreateInspectionForm = ({
       ) : (
         <InspectionForm 
           vehicleId={selectedVehicleId!}
-          onCancel={() => setStep('select-vehicle')}
           setActiveForm={setActiveForm}
           searchParams={searchParams}
         />
