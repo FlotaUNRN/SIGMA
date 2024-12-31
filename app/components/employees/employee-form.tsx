@@ -277,8 +277,8 @@ export function EmployeeForm({
         />
       </div>
 
-      <div className='flex items-end justify-end'>
-        <div className='ml-2 flex flex-col gap-1 md:flex-row'>
+      <div className='flex items-end justify-end pt-6 md:pt-2'>
+        <div className='ml-2 flex flex-col gap-2 md:flex-row'>
           <Button
             size='sm'
             color='success'
