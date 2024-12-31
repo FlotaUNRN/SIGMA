@@ -4,7 +4,6 @@ import Search from '@/app/components/search';
 import { useState } from 'react';
 import { CreateInspectionForm } from './create-form';
 import { motion, AnimatePresence } from 'framer-motion';
-// import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTotalInspectionsPages, useInspections } from '@/hooks/swr-hooks';
 import { Inspection } from '@/app/lib/definitions';
@@ -32,13 +31,13 @@ export default function InspectionsList({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col items-center justify-between gap-2 md:flex-row">
-        <div className="w-full md:w-96">
+        <div className="w-full">
           <Search placeholder="Buscar inspecciones" />
         </div>
-        <div className="w-full md:w-auto">
+        <div className="flex w-full justify-center md:w-auto">
           <Button
             color="success"
-            className="w-full md:w-auto"
+            className="mb-2 md:m-0"
             onClick={() => setActiveForm(!activeForm)}
             endContent={
               <svg
@@ -115,9 +114,9 @@ export default function InspectionsList({
             replace(`${pathname}?${params.toString()}`);
           }}
           classNames={{
-            wrapper: 'gap-0 overflow-visible h-8',
-            item: 'w-8 h-8',
-            cursor: 'bg-primary',
+            item: 'bg-background',
+            prev: 'bg-background',
+            next: 'bg-background',
           }}
         />
       </div>

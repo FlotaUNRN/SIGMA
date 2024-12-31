@@ -3,7 +3,6 @@ import { useInspectionById, useVehicleById } from '@/hooks/swr-hooks';
 import { Spinner, Button, Card, CardBody } from '@nextui-org/react';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { ChevronLeftIcon } from '@heroicons/react/24/outline';
 
 export default function InspectionDetails({ id }: { id: string }) {
   const { inspection, isLoading } = useInspectionById(id);
@@ -51,40 +50,69 @@ export default function InspectionDetails({ id }: { id: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center">
-          <div className="flex items-center justify-between gap-4 md:flex-1">
-            <div>
-              <h1 className="text-xl font-bold md:text-2xl">
-                Inspección #{inspection.reference_code}
-                <Link href="/dashboard/inspections" className="ml-3 inline-flex">
-                  <Button
-                    isIconOnly
-                    color="danger"
-                    variant="ghost"
-                    size="sm"
-                    aria-label="Volver"
-                  >
-                    <ChevronLeftIcon className="h-5 w-5" />
-                  </Button>
-                </Link>
-              </h1>
-              {vehicle && (
-                <p className="mt-1 text-sm text-foreground/80 md:text-lg">
-                  {vehicle.make} {vehicle.model} - {vehicle.license_plate}
-                </p>
-              )}
-            </div>
-          </div>
-          <span className={`self-start rounded-full px-3 py-1 text-sm font-medium whitespace-nowrap md:self-center ${
-            inspection.status === 'Completado' ? 'bg-success-100 text-success-700' :
-              inspection.status === 'En Proceso' ? 'bg-primary-100 text-primary-700' :
-                'bg-warning-100 text-warning-700'
-          }`}>
-            {inspection.status}
-          </span>
-        </div>
+      <div className="flex justify-between">
+        <h1 className="mb-6 text-2xl">Detalles de la Inspección</h1>
+        <Link href="/dashboard/inspections">
+          <Button color="primary" variant="ghost" className="flex md:hidden">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="h-4 w-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+              />
+            </svg>
+          </Button>
+          <Button
+            color="primary"
+            variant="ghost"
+            className="hidden md:flex"
+            startContent={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="h-5 w-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+                />
+              </svg>
+            }
+          >
+            Volver
+          </Button>
+        </Link>
       </div>
+
+      <div className="flex items-center gap-4">
+        <h2 className="text-lg">
+          Inspección #{inspection.reference_code}
+        </h2>
+        <span className={`rounded-full px-3 py-1 text-sm font-medium whitespace-nowrap ${
+          inspection.status === 'Completado' ? 'bg-success-100 text-success-700' :
+            inspection.status === 'En Proceso' ? 'bg-primary-100 text-primary-700' :
+              'bg-warning-100 text-warning-700'
+        }`}>
+          {inspection.status}
+        </span>
+      </div>
+      
+      {vehicle && (
+        <p className="mt-1 text-sm text-foreground/80 md:text-lg">
+          {vehicle.make} {vehicle.model} - {vehicle.license_plate}
+        </p>
+      )}
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card>

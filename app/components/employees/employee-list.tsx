@@ -30,13 +30,13 @@ export function EmployeeList({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col items-center justify-between gap-2 md:flex-row">
-        <div className="w-full md:w-96">
+        <div className="w-full">
           <Search placeholder="Buscar empleados" />
         </div>
-        <div className="w-full md:w-auto">
+        <div className="flex w-full justify-center md:w-auto">
           <Button
             color="success"
-            className="w-full md:w-auto"
+            className="mb-2 md:m-0"
             onClick={() => setActiveForm(!activeForm)}
             endContent={
               <svg
@@ -75,7 +75,6 @@ export function EmployeeList({
           >
             <EmployeeForm 
               onSubmit={() => {
-                // Handle form submission here
                 setActiveForm(false);
               }}
               onCancel={() => setActiveForm(false)}
@@ -116,9 +115,9 @@ export function EmployeeList({
             replace(`${pathname}?${params.toString()}`);
           }}
           classNames={{
-            wrapper: 'gap-0 overflow-visible h-8',
-            item: 'w-8 h-8',
-            cursor: 'bg-primary',
+            item: 'bg-background',
+            prev: 'bg-background',
+            next: 'bg-background',
           }}
         />
       </div>
