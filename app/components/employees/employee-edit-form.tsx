@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState } from 'react';
 import { Button, Input, Select, SelectItem } from '@nextui-org/react';
 import { Employee } from '@/app/lib/definitions';
@@ -51,38 +49,69 @@ export function EmployeeEditForm({ employee, onClose, onSuccess }: EmployeeEditF
     }
   };
 
+  const commonInputClasses = {
+    label: 'text-default-600 font-normal mb-1',
+    input: 'font-normal',
+    base: 'mb-3'
+  };
+
+  const commonSelectClasses = {
+    label: 'text-default-600 font-normal mb-1',
+    trigger: 'h-11',
+    base: 'mb-3'
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 rounded-lg bg-lightPaper p-6 shadow-xl dark:bg-darkPaper">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+    <form onSubmit={handleSubmit} className='space-y-6 rounded-lg bg-lightPaper p-6 shadow-xl dark:bg-darkPaper'>
+      <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
         <Input
-          label="Nombre"
+          label='Nombre'
           value={formData.first_name}
           onChange={(e) => setFormData({...formData, first_name: e.target.value})}
           required
+          variant='bordered'
+          labelPlacement='outside'
+          classNames={commonInputClasses}
         />
+
         <Input
-          label="Apellido"
+          label='Apellido'
           value={formData.last_name}
           onChange={(e) => setFormData({...formData, last_name: e.target.value})}
           required
+          variant='bordered'
+          labelPlacement='outside'
+          classNames={commonInputClasses}
         />
+
         <Input
-          label="DNI"
+          label='DNI'
           value={formData.dni}
           onChange={(e) => setFormData({...formData, dni: e.target.value})}
           required
+          variant='bordered'
+          labelPlacement='outside'
+          classNames={commonInputClasses}
         />
+
         <Input
-          label="Número de Licencia"
+          label='Número de Licencia'
           value={formData.license_number}
           onChange={(e) => setFormData({...formData, license_number: e.target.value})}
           required
+          variant='bordered'
+          labelPlacement='outside'
+          classNames={commonInputClasses}
         />
+
         <Select
-          label="Tipo de Licencia"
+          label='Tipo de Licencia'
           selectedKeys={[formData.license_type]}
           onChange={(e) => setFormData({...formData, license_type: e.target.value})}
           required
+          variant='bordered'
+          labelPlacement='outside'
+          classNames={commonSelectClasses}
         >
           {licenseTypes.map((type) => (
             <SelectItem key={type} value={type}>
@@ -90,29 +119,45 @@ export function EmployeeEditForm({ employee, onClose, onSuccess }: EmployeeEditF
             </SelectItem>
           ))}
         </Select>
+
         <Input
-          type="date"
-          label="Vencimiento de Licencia"
+          type='date'
+          label='Vencimiento de Licencia'
           value={formData.license_expiry_date}
           onChange={(e) => setFormData({...formData, license_expiry_date: e.target.value})}
           required
+          variant='bordered'
+          labelPlacement='outside'
+          classNames={commonInputClasses}
         />
+
         <Input
-          type="email"
-          label="Email"
+          type='email'
+          label='Email'
           value={formData.email}
           onChange={(e) => setFormData({...formData, email: e.target.value})}
+          variant='bordered'
+          labelPlacement='outside'
+          classNames={commonInputClasses}
         />
+
         <Input
-          label="Teléfono"
+          label='Teléfono'
           value={formData.phone}
           onChange={(e) => setFormData({...formData, phone: e.target.value})}
+          variant='bordered'
+          labelPlacement='outside'
+          classNames={commonInputClasses}
         />
+
         <Select
-          label="Departamento"
+          label='Departamento'
           selectedKeys={[formData.department]}
           onChange={(e) => setFormData({...formData, department: e.target.value})}
           required
+          variant='bordered'
+          labelPlacement='outside'
+          classNames={commonSelectClasses}
         >
           {departments.map((dept) => (
             <SelectItem key={dept} value={dept}>
@@ -120,11 +165,15 @@ export function EmployeeEditForm({ employee, onClose, onSuccess }: EmployeeEditF
             </SelectItem>
           ))}
         </Select>
+
         <Select
-          label="Cargo"
+          label='Cargo'
           selectedKeys={[formData.position]}
           onChange={(e) => setFormData({...formData, position: e.target.value})}
           required
+          variant='bordered'
+          labelPlacement='outside'
+          classNames={commonSelectClasses}
         >
           {positions.map((pos) => (
             <SelectItem key={pos} value={pos}>
@@ -132,31 +181,40 @@ export function EmployeeEditForm({ employee, onClose, onSuccess }: EmployeeEditF
             </SelectItem>
           ))}
         </Select>
+
         <Select
-          label="Estado"
+          label='Estado'
           selectedKeys={[formData.status]}
           onChange={(e) => setFormData({...formData, status: e.target.value as Employee['status']})}
           required
+          variant='bordered'
+          labelPlacement='outside'
+          classNames={commonSelectClasses}
         >
-          <SelectItem key="Activo" value="Activo">Activo</SelectItem>
-          <SelectItem key="Inactivo" value="Inactivo">Inactivo</SelectItem>
-          <SelectItem key="Licencia" value="Licencia">Licencia</SelectItem>
+          <SelectItem key='Activo' value='Activo'>Activo</SelectItem>
+          <SelectItem key='Inactivo' value='Inactivo'>Inactivo</SelectItem>
+          <SelectItem key='Licencia' value='Licencia'>Licencia</SelectItem>
         </Select>
+
         <Input
-          label="URL de Foto"
+          label='URL de Foto'
           value={formData.photo_url}
           onChange={(e) => setFormData({...formData, photo_url: e.target.value})}
+          variant='bordered'
+          labelPlacement='outside'
+          classNames={commonInputClasses}
         />
       </div>
 
-      <div className="flex justify-end gap-2">
-        <Button color="danger" variant="light" onClick={onClose}>
+      <div className='flex justify-end gap-3 pt-4'>
+        <Button color='danger' variant='light' onClick={onClose}>
           Cancelar
         </Button>
-        <Button color="success" type="submit">
+        <Button color='success' type='submit'>
           Guardar Cambios
         </Button>
       </div>
     </form>
   );
 }
+

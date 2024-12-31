@@ -65,88 +65,37 @@ export function EmployeeForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className='mt-2 rounded-lg bg-lightPaper p-6 shadow-xl dark:bg-darkPaper'>
-      <div className='flex flex-col gap-3 md:flex-row md:justify-between md:pb-3'>
+    <form onSubmit={handleSubmit} className="space-y-6 rounded-lg bg-lightPaper p-6 shadow-xl dark:bg-darkPaper">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <Input
-          label='Nombre'
-          name='first_name'
-          type='text'
-          variant='bordered'
-          labelPlacement='outside'
+          label="Nombre"
           value={formData.first_name}
-          onValueChange={(value) => setFormData({...formData, first_name: value})}
-          placeholder='Ingresar nombre'
-          errorMessage='Ingresa un nombre válido'
-          isRequired
-          classNames={{
-            label: 'text-default-600 font-normal',
-            input: 'font-normal'
-          }}
+          onChange={(e) => setFormData({...formData, first_name: e.target.value})}
+          required
         />
         <Input
-          label='Apellido'
-          name='last_name'
-          type='text'
-          variant='bordered'
-          labelPlacement='outside'
+          label="Apellido"
           value={formData.last_name}
-          onValueChange={(value) => setFormData({...formData, last_name: value})}
-          placeholder='Ingresar apellido'
-          errorMessage='Ingresa un apellido válido'
-          isRequired
-          classNames={{
-            label: 'text-default-600 font-normal',
-            input: 'font-normal'
-          }}
+          onChange={(e) => setFormData({...formData, last_name: e.target.value})}
+          required
         />
         <Input
-          label='DNI'
-          name='dni'
-          type='text'
-          variant='bordered'
-          labelPlacement='outside'
+          label="DNI"
           value={formData.dni}
-          onValueChange={(value) => setFormData({...formData, dni: value})}
-          placeholder='Ingresar DNI'
-          errorMessage='Ingresa un DNI válido'
-          isRequired
-          classNames={{
-            label: 'text-default-600 font-normal',
-            input: 'font-normal'
-          }}
+          onChange={(e) => setFormData({...formData, dni: e.target.value})}
+          required
         />
-      </div>
-      
-      <div className='flex flex-col gap-3 md:flex-row md:justify-between md:pb-3'>
         <Input
-          label='Número de Licencia'
-          name='license_number'
-          type='text'
-          variant='bordered'
-          labelPlacement='outside'
+          label="Número de Licencia"
           value={formData.license_number}
-          onValueChange={(value) => setFormData({...formData, license_number: value})}
-          placeholder='Ingresar número de licencia'
-          errorMessage='Ingresa un número de licencia válido'
-          isRequired
-          classNames={{
-            label: 'text-default-600 font-normal',
-            input: 'font-normal'
-          }}
+          onChange={(e) => setFormData({...formData, license_number: e.target.value})}
+          required
         />
         <Select
-          label='Tipo de Licencia'
-          name='license_type'
-          variant='bordered'
-          labelPlacement='outside'
-          placeholder='Seleccionar tipo de licencia'
-          selectedKeys={formData.license_type ? [formData.license_type] : []}
+          label="Tipo de Licencia"
+          value={formData.license_type}
           onChange={(e) => setFormData({...formData, license_type: e.target.value})}
-          isRequired
-          classNames={{
-            label: 'text-default-600 font-normal',
-            trigger: 'h-12'
-          }}
+          required
         >
           {licenseTypes.map((type) => (
             <SelectItem key={type.key} value={type.key}>
@@ -155,64 +104,28 @@ export function EmployeeForm({
           ))}
         </Select>
         <Input
-          type='date'
-          label='Vencimiento de Licencia'
-          name='license_expiry_date'
-          variant='bordered'
-          labelPlacement='outside'
-          placeholder='Seleccionar fecha'
+          type="date"
+          label="Vencimiento de Licencia"
           value={formData.license_expiry_date}
           onChange={(e) => setFormData({...formData, license_expiry_date: e.target.value})}
-          isRequired
-          classNames={{
-            label: 'text-default-600 font-normal',
-            input: 'font-normal'
-          }}
+          required
         />
-      </div>
-
-      <div className='flex flex-col gap-3 md:flex-row md:justify-between md:pb-3'>
         <Input
-          type='email'
-          label='Email'
-          name='email'
-          variant='bordered'
-          labelPlacement='outside'
+          type="email"
+          label="Email"
           value={formData.email}
-          onValueChange={(value) => setFormData({...formData, email: value})}
-          placeholder='Ingresar email'
-          classNames={{
-            label: 'text-default-600 font-normal',
-            input: 'font-normal'
-          }}
+          onChange={(e) => setFormData({...formData, email: e.target.value})}
         />
         <Input
-          label='Teléfono'
-          name='phone'
-          type='text'
-          variant='bordered'
-          labelPlacement='outside'
+          label="Teléfono"
           value={formData.phone}
-          onValueChange={(value) => setFormData({...formData, phone: value})}
-          placeholder='Ingresar teléfono'
-          classNames={{
-            label: 'text-default-600 font-normal',
-            input: 'font-normal'
-          }}
+          onChange={(e) => setFormData({...formData, phone: e.target.value})}
         />
         <Select
-          label='Departamento'
-          name='department'
-          variant='bordered'
-          labelPlacement='outside'
-          placeholder='Seleccionar departamento'
-          selectedKeys={formData.department ? [formData.department] : []}
+          label="Departamento"
+          value={formData.department}
           onChange={(e) => setFormData({...formData, department: e.target.value})}
-          isRequired
-          classNames={{
-            label: 'text-default-600 font-normal',
-            trigger: 'h-12'
-          }}
+          required
         >
           {departments.map((dept) => (
             <SelectItem key={dept.key} value={dept.key}>
@@ -220,22 +133,11 @@ export function EmployeeForm({
             </SelectItem>
           ))}
         </Select>
-      </div>
-
-      <div className='flex flex-col gap-3 md:flex-row md:justify-between md:pb-3'>
         <Select
-          label='Cargo'
-          name='position'
-          variant='bordered'
-          labelPlacement='outside'
-          placeholder='Seleccionar cargo'
-          selectedKeys={formData.position ? [formData.position] : []}
+          label="Cargo"
+          value={formData.position}
           onChange={(e) => setFormData({...formData, position: e.target.value})}
-          isRequired
-          classNames={{
-            label: 'text-default-600 font-normal',
-            trigger: 'h-12'
-          }}
+          required
         >
           {positions.map((pos) => (
             <SelectItem key={pos.key} value={pos.key}>
@@ -244,86 +146,29 @@ export function EmployeeForm({
           ))}
         </Select>
         <Select
-          label='Estado'
-          name='status'
-          variant='bordered'
-          labelPlacement='outside'
-          placeholder='Seleccionar estado'
-          selectedKeys={[formData.status]}
+          label="Estado"
+          value={formData.status}
           onChange={(e) => setFormData({...formData, status: e.target.value})}
-          isRequired
-          classNames={{
-            label: 'text-default-600 font-normal',
-            trigger: 'h-12'
-          }}
+          required
         >
-          <SelectItem key='Activo' value='Activo'>Activo</SelectItem>
-          <SelectItem key='Inactivo' value='Inactivo'>Inactivo</SelectItem>
-          <SelectItem key='Licencia' value='Licencia'>Licencia</SelectItem>
+          <SelectItem key="Activo" value="Activo">Activo</SelectItem>
+          <SelectItem key="Inactivo" value="Inactivo">Inactivo</SelectItem>
+          <SelectItem key="Licencia" value="Licencia">Licencia</SelectItem>
         </Select>
         <Input
-          label='URL de Foto'
-          name='photo_url'
-          type='text'
-          variant='bordered'
-          labelPlacement='outside'
+          label="URL de Foto"
           value={formData.photo_url}
-          onValueChange={(value) => setFormData({...formData, photo_url: value})}
-          placeholder='Ingresar URL de la foto'
-          classNames={{
-            label: 'text-default-600 font-normal',
-            input: 'font-normal'
-          }}
+          onChange={(e) => setFormData({...formData, photo_url: e.target.value})}
         />
       </div>
 
-      <div className='flex items-end justify-end pt-6 md:pt-2'>
-        <div className='ml-2 flex flex-col gap-2 md:flex-row'>
-          <Button
-            size='sm'
-            color='success'
-            variant='bordered'
-            type='submit'
-            endContent={
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth={1.5}
-                stroke='currentColor'
-                className='h-6 w-6'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='m4.5 12.75 6 6 9-13.5'
-                />
-              </svg>
-            }
-          />
-          <Button
-            size='sm'
-            color='danger'
-            variant='bordered'
-            onClick={onCancel}
-            endContent={
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth={1.5}
-                stroke='currentColor'
-                className='h-6 w-6'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M6 18 18 6M6 6l12 12'
-                />
-              </svg>
-            }
-          />
-        </div>
+      <div className="flex justify-end gap-2">
+        <Button color="danger" variant="light" onClick={onCancel}>
+          Cancelar
+        </Button>
+        <Button color="primary" type="submit">
+          Guardar Empleado
+        </Button>
       </div>
     </form>
   );
