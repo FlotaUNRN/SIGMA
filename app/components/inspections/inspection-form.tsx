@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Select, SelectItem } from '@nextui-org/react';
 import { Input } from '@/app/components/form/input';
-import { useState } from 'react';
 import { createInspection } from '@/app/lib/actions';
 import { toast } from 'sonner';
 import {
@@ -10,26 +9,22 @@ import {
   useTotalInspections,
 } from '@/hooks/swr-hooks';
 
-type InspectionFormProps = {
-  vehicleId: string;
-  onCancel: () => void;
-  setActiveForm: (activeForm: boolean) => void;
-  searchParams?: {
-    query?: string;
-    page?: string;
-  };
-};
-
 const statusOptions = ['Completado', 'Pendiente', 'En Proceso'];
 const fluidStatusOptions = ['OK', 'Requiere Atención', 'Atención Futura', 'Lleno'];
 const componentStatusOptions = ['OK', 'Requiere Atención', 'Atención Futura'];
 
 export const InspectionForm = ({
   vehicleId,
-  // onCancel,
   setActiveForm,
   searchParams,
-}: InspectionFormProps) => {
+}: {
+  vehicleId: string;
+  setActiveForm: (activeForm: boolean) => void;
+  searchParams?: {
+    query?: string;
+    page?: string;
+  };
+}) => {
   const query = searchParams?.query;
   const currentPage = Number(searchParams?.page) || 1;
   const { mutateInspections } = useInspections(query, currentPage);
@@ -70,11 +65,9 @@ export const InspectionForm = ({
     notes: ''
   });
 
-  // Estados de error
   const [dateError, setDateError] = useState(false);
   const [odometerError, setOdometerError] = useState(false);
 
-  // Funciones de validación
   const validateDate = (date: string) => {
     if (!date) {
       setDateError(true);
@@ -98,7 +91,6 @@ export const InspectionForm = ({
     e.preventDefault();
     setTrySubmit(true);
 
-    // Validar campos requeridos
     if (!validateDate(formData.inspection_date) || !validateOdometer(formData.odometer_reading)) {
       return;
     }
@@ -132,18 +124,28 @@ export const InspectionForm = ({
     );
   };
 
+  const commonInputClasses = {
+    label: 'text-default-600 font-normal',
+    input: 'font-normal'
+  };
+
+  const commonSelectClasses = {
+    label: 'text-default-600 font-normal',
+    trigger: 'h-12'
+  };
+
   return (
     <form onSubmit={handleSubmit} className="mt-2 rounded-lg bg-lightPaper p-6 shadow-xl dark:bg-darkPaper">
       <div className="grid grid-cols-1 gap-6">
         {/* Información básica */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <Input
-            label='Fecha'
-            name='inspection_date'
-            type='datetime-local'
-            variant='bordered'
-            labelPlacement='outside'
-            placeholder=' '
+            type="datetime-local"
+            label="Fecha y Hora"
+            name="inspection_date"
+            variant="bordered"
+            labelPlacement="outside"
+            placeholder="Seleccionar fecha y hora"
             value={formData.inspection_date}
             onValueChange={(value) => {
               setFormData({ ...formData, inspection_date: value });
@@ -152,11 +154,8 @@ export const InspectionForm = ({
             isRequired
             isInvalid={trySubmit && dateError}
             errorMessage={dateError ? 'Ingrese una fecha válida' : ''}
-            description='Ingrese la fecha y hora en que se realiza la inspección'
-            classNames={{
-              label: 'text-default-600 font-normal',
-              input: 'font-normal'
-            }}
+            description="Ingrese la fecha y hora de la inspección"
+            classNames={commonInputClasses}
           />
 
           <Input
@@ -175,11 +174,8 @@ export const InspectionForm = ({
             isInvalid={trySubmit && odometerError}
             errorMessage={odometerError ? 'Ingrese un kilometraje válido' : ''}
             description="Ingrese el kilometraje actual del vehículo"
-            endContent={
-              <div className="pointer-events-none flex items-center">
-                <span className="text-default-400 text-small">km</span>
-              </div>
-            }
+            endContent={<div className="pointer-events-none text-default-400 text-small">km</div>}
+            classNames={commonInputClasses}
           />
 
           <Select
@@ -187,9 +183,11 @@ export const InspectionForm = ({
             name="status"
             variant="bordered"
             labelPlacement="outside"
+            placeholder="Seleccionar estado"
             selectedKeys={[formData.status]}
             onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-            description="Seleccione el estado actual de la inspección"
+            isRequired
+            classNames={commonSelectClasses}
           >
             {statusOptions.map((status) => (
               <SelectItem key={status} value={status}>
@@ -200,92 +198,55 @@ export const InspectionForm = ({
         </div>
 
         {/* URLs de imágenes */}
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Imágenes del Vehículo</h3>
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-default-700">Imágenes del Vehículo</h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <Input
-              label="Imagen Frontal"
-              name="front_image_url"
-              type="text"
-              variant="bordered"
-              labelPlacement="outside"
-              placeholder="Ingrese la URL de la imagen frontal"
-              value={formData.front_image_url}
-              onValueChange={(value) => setFormData({ ...formData, front_image_url: value })}
-              classNames={{
-                label: 'text-default-600 font-normal',
-                input: 'font-normal'
-              }}
-            />
-            <Input
-              label="Imagen Lateral Conductor"
-              name="driver_side_image_url"
-              type="text"
-              variant="bordered"
-              labelPlacement="outside"
-              placeholder="Ingrese la URL de la imagen del conductor"
-              value={formData.driver_side_image_url}
-              onValueChange={(value) => setFormData({ ...formData, driver_side_image_url: value })}
-              classNames={{
-                label: 'text-default-600 font-normal',
-                input: 'font-normal'
-              }}
-            />
-            <Input
-              label="Imagen Lateral Pasajero"
-              name="passenger_side_image_url"
-              type="text"
-              variant="bordered"
-              labelPlacement="outside"
-              placeholder="Ingrese la URL de la imagen del pasajero"
-              value={formData.passenger_side_image_url}
-              onValueChange={(value) => setFormData({ ...formData, passenger_side_image_url: value })}
-              classNames={{
-                label: 'text-default-600 font-normal',
-                input: 'font-normal'
-              }}
-            />
-            <Input
-              label="Imagen Trasera"
-              name="back_image_url"
-              type="text"
-              variant="bordered"
-              labelPlacement="outside"
-              placeholder="Ingrese la URL de la imagen trasera"
-              value={formData.back_image_url}
-              onValueChange={(value) => setFormData({ ...formData, back_image_url: value })}
-              classNames={{
-                label: 'text-default-600 font-normal',
-                input: 'font-normal'
-              }}
-            />
+            {[
+              { key: 'front_image_url', label: 'Imagen Frontal' },
+              { key: 'driver_side_image_url', label: 'Imagen Lateral Conductor' },
+              { key: 'passenger_side_image_url', label: 'Imagen Lateral Pasajero' },
+              { key: 'back_image_url', label: 'Imagen Trasera' }
+            ].map(({ key, label }) => (
+              <Input
+                key={key}
+                label={label}
+                name={key}
+                type="text"
+                variant="bordered"
+                labelPlacement="outside"
+                placeholder={`URL de la ${label.toLowerCase()}`}
+                value={formData[key as keyof typeof formData] as string}
+                onValueChange={(value) => setFormData({ ...formData, [key]: value })}
+                classNames={commonInputClasses}
+              />
+            ))}
           </div>
         </div>
 
-        
-
         {/* Estado de Fluidos */}
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Estado de Fluidos</h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-default-700">Estado de Fluidos</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {[
-              { key: 'engine_oil_status', label: 'Aceite de Motor', description: 'Estado del aceite del motor' },
-              { key: 'transmission_status', label: 'Transmisión', description: 'Estado del fluido de transmisión' },
-              { key: 'differential_status', label: 'Diferencial', description: 'Estado del fluido del diferencial' },
-              { key: 'coolant_status', label: 'Refrigerante', description: 'Estado del líquido refrigerante' },
-              { key: 'brake_fluid_status', label: 'Líquido de Frenos', description: 'Estado del líquido de frenos' },
-              { key: 'power_steering_status', label: 'Dirección Hidráulica', description: 'Estado del líquido de dirección hidráulica' },
-              { key: 'wiper_fluid_status', label: 'Limpiaparabrisas', description: 'Estado del líquido limpiaparabrisas' },
-            ].map(({ key, label, description }) => (
+              { key: 'engine_oil_status', label: 'Aceite de Motor' },
+              { key: 'transmission_status', label: 'Transmisión' },
+              { key: 'differential_status', label: 'Diferencial' },
+              { key: 'coolant_status', label: 'Refrigerante' },
+              { key: 'brake_fluid_status', label: 'Líquido de Frenos' },
+              { key: 'power_steering_status', label: 'Dirección Hidráulica' },
+              { key: 'wiper_fluid_status', label: 'Limpiaparabrisas' }
+            ].map(({ key, label }) => (
               <Select
                 key={key}
                 label={label}
                 name={key}
                 variant="bordered"
                 labelPlacement="outside"
-                selectedKeys={[formData[key as keyof typeof formData]]}
+                placeholder={`Seleccionar estado de ${label.toLowerCase()}`}
+                selectedKeys={[formData[key as keyof typeof formData] as string]}
                 onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                description={`Seleccione el ${description.toLowerCase()}`}
+                isRequired
+                classNames={commonSelectClasses}
               >
                 {fluidStatusOptions.map((status) => (
                   <SelectItem key={status} value={status}>
@@ -298,24 +259,26 @@ export const InspectionForm = ({
         </div>
 
         {/* Mangueras y Correas */}
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Mangueras y Correas</h3>
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-default-700">Mangueras y Correas</h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {[
-              { key: 'steering_hose_status', label: 'Manguera de Dirección', description: 'Estado de la manguera de dirección' },
-              { key: 'heater_hose_status', label: 'Manguera del Calefactor', description: 'Estado de la manguera del calefactor' },
-              { key: 'serpentine_belt_status', label: 'Correa Serpentina', description: 'Estado de la correa serpentina' },
-              { key: 'alternator_belt_status', label: 'Correa del Alternador', description: 'Estado de la correa del alternador' },
-            ].map(({ key, label, description }) => (
+              { key: 'steering_hose_status', label: 'Manguera de Dirección' },
+              { key: 'heater_hose_status', label: 'Manguera del Calefactor' },
+              { key: 'serpentine_belt_status', label: 'Correa Serpentina' },
+              { key: 'alternator_belt_status', label: 'Correa del Alternador' }
+            ].map(({ key, label }) => (
               <Select
                 key={key}
                 label={label}
                 name={key}
                 variant="bordered"
                 labelPlacement="outside"
-                selectedKeys={[formData[key as keyof typeof formData]]}
+                placeholder={`Seleccionar estado de ${label.toLowerCase()}`}
+                selectedKeys={[formData[key as keyof typeof formData] as string]}
                 onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                description={`Seleccione el ${description.toLowerCase()}`}
+                isRequired
+                classNames={commonSelectClasses}
               >
                 {componentStatusOptions.map((status) => (
                   <SelectItem key={status} value={status}>
@@ -328,23 +291,25 @@ export const InspectionForm = ({
         </div>
 
         {/* Filtros */}
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Filtros</h3>
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-default-700">Filtros</h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {[
-              { key: 'air_filter_status', label: 'Filtro de Aire', description: 'Estado del filtro de aire' },
-              { key: 'fuel_filter_status', label: 'Filtro de Combustible', description: 'Estado del filtro de combustible' },
-              { key: 'oil_filter_status', label: 'Filtro de Aceite', description: 'Estado del filtro de aceite' },
-            ].map(({ key, label, description }) => (
+              { key: 'air_filter_status', label: 'Filtro de Aire' },
+              { key: 'fuel_filter_status', label: 'Filtro de Combustible' },
+              { key: 'oil_filter_status', label: 'Filtro de Aceite' }
+            ].map(({ key, label }) => (
               <Select
                 key={key}
                 label={label}
                 name={key}
                 variant="bordered"
                 labelPlacement="outside"
-                selectedKeys={[formData[key as keyof typeof formData]]}
+                placeholder={`Seleccionar estado de ${label.toLowerCase()}`}
+                selectedKeys={[formData[key as keyof typeof formData] as string]}
                 onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                description={`Seleccione el ${description.toLowerCase()}`}
+                isRequired
+                classNames={commonSelectClasses}
               >
                 {componentStatusOptions.map((status) => (
                   <SelectItem key={status} value={status}>
@@ -357,24 +322,26 @@ export const InspectionForm = ({
         </div>
 
         {/* Neumáticos */}
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Estado de Neumáticos</h3>
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-default-700">Estado de Neumáticos</h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {[
-              { key: 'front_left_tire_status', label: 'Neumático Delantero Izquierdo', description: 'Estado del neumático delantero izquierdo' },
-              { key: 'front_right_tire_status', label: 'Neumático Delantero Derecho', description: 'Estado del neumático delantero derecho' },
-              { key: 'rear_left_tire_status', label: 'Neumático Trasero Izquierdo', description: 'Estado del neumático trasero izquierdo' },
-              { key: 'rear_right_tire_status', label: 'Neumático Trasero Derecho', description: 'Estado del neumático trasero derecho' },
-            ].map(({ key, label, description }) => (
+              { key: 'front_left_tire_status', label: 'Neumático Delantero Izquierdo' },
+              { key: 'front_right_tire_status', label: 'Neumático Delantero Derecho' },
+              { key: 'rear_left_tire_status', label: 'Neumático Trasero Izquierdo' },
+              { key: 'rear_right_tire_status', label: 'Neumático Trasero Derecho' }
+            ].map(({ key, label }) => (
               <Select
                 key={key}
                 label={label}
                 name={key}
                 variant="bordered"
                 labelPlacement="outside"
-                selectedKeys={[formData[key as keyof typeof formData]]}
+                placeholder={`Seleccionar estado de ${label.toLowerCase()}`}
+                selectedKeys={[formData[key as keyof typeof formData] as string]}
                 onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                description={`Seleccione el ${description.toLowerCase()}`}
+                isRequired
+                classNames={commonSelectClasses}
               >
                 {componentStatusOptions.map((status) => (
                   <SelectItem key={status} value={status}>
@@ -387,23 +354,25 @@ export const InspectionForm = ({
         </div>
 
         {/* Sistemas de Seguridad */}
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Sistemas de Seguridad</h3>
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-default-700">Sistemas de Seguridad</h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {[
-              { key: 'emergency_brake_status', label: 'Freno de Emergencia', description: 'Estado del freno de emergencia' },
-              { key: 'front_wiper_status', label: 'Limpiaparabrisas Delantero', description: 'Estado del limpiaparabrisas delantero' },
-              { key: 'rear_wiper_status', label: 'Limpiaparabrisas Trasero', description: 'Estado del limpiaparabrisas trasero' },
-            ].map(({ key, label, description }) => (
+              { key: 'emergency_brake_status', label: 'Freno de Emergencia' },
+              { key: 'front_wiper_status', label: 'Limpiaparabrisas Delantero' },
+              { key: 'rear_wiper_status', label: 'Limpiaparabrisas Trasero' }
+            ].map(({ key, label }) => (
               <Select
                 key={key}
                 label={label}
                 name={key}
                 variant="bordered"
                 labelPlacement="outside"
-                selectedKeys={[formData[key as keyof typeof formData]]}
+                placeholder={`Seleccionar estado de ${label.toLowerCase()}`}
+                selectedKeys={[formData[key as keyof typeof formData] as string]}
                 onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                description={`Seleccione el ${description.toLowerCase()}`}
+                isRequired
+                classNames={commonSelectClasses}
               >
                 {componentStatusOptions.map((status) => (
                   <SelectItem key={status} value={status}>
@@ -416,10 +385,9 @@ export const InspectionForm = ({
         </div>
 
         {/* Notas */}
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Notas Adicionales</h3>
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-default-700">Notas Adicionales</h3>
           <Input
-            label="Notas"
             name="notes"
             type="text"
             variant="bordered"
@@ -428,6 +396,7 @@ export const InspectionForm = ({
             onValueChange={(value) => setFormData({ ...formData, notes: value })}
             placeholder="Ingrese notas adicionales sobre la inspección"
             description="Agregue cualquier observación relevante sobre la inspección"
+            classNames={commonInputClasses}
           />
         </div>
 

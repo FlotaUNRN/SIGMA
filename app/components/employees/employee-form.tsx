@@ -64,120 +64,155 @@ export function EmployeeForm({
     onSubmit(formData);
   };
 
-  const commonClassNames = {
-    base: "max-w-full",
-    label: "pb-1",
-    inputWrapper: "pb-0"
-  };
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 rounded-lg bg-lightPaper p-6 shadow-xl dark:bg-darkPaper">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+    <form onSubmit={handleSubmit} className='mt-2 rounded-lg bg-lightPaper p-6 shadow-xl dark:bg-darkPaper'>
+      <div className='flex flex-col gap-3 md:flex-row md:justify-between md:pb-3'>
         <Input
-          label="Nombre"
-          labelPlacement="outside"
+          label='Nombre'
+          name='first_name'
+          type='text'
+          variant='bordered'
+          labelPlacement='outside'
           value={formData.first_name}
-          onChange={(e) => setFormData({...formData, first_name: e.target.value})}
-          required
-          isRequired
-          classNames={commonClassNames}
-        />
-        <Input
-          label="Apellido"
-          labelPlacement="outside"
-          value={formData.last_name}
-          onChange={(e) => setFormData({...formData, last_name: e.target.value})}
-          required
-          isRequired
-          classNames={commonClassNames}
-        />
-        <Input
-          label="DNI"
-          labelPlacement="outside"
-          value={formData.dni}
-          onChange={(e) => setFormData({...formData, dni: e.target.value})}
-          required
-          isRequired
-          classNames={commonClassNames}
-        />
-        <Input
-          label="Número de Licencia"
-          labelPlacement="outside"
-          value={formData.license_number}
-          onChange={(e) => setFormData({...formData, license_number: e.target.value})}
-          required
-          isRequired
-          classNames={commonClassNames}
-        />
-        <Select
-          label="Tipo de Licencia"
-          labelPlacement="outside"
-          value={formData.license_type}
-          onChange={(e) => setFormData({...formData, license_type: e.target.value})}
-          required
-          isRequired
-          classNames={commonClassNames}
-        >
-          {licenseTypes.map((type) => (
-            <SelectItem key={type.key} value={type.key}>
-              {type.label}
-            </SelectItem>
-          ))}
-        </Select>
-        <Select
-          label="Tipo de Licencia"
-          labelPlacement="outside"
-          placeholder="Seleccionar tipo"
-          value={formData.license_type}
-          onChange={(e) => setFormData({...formData, license_type: e.target.value})}
-          required
-          isRequired
-          classNames={commonClassNames}
-        >
-          {licenseTypes.map((type) => (
-            <SelectItem key={type.key} value={type.key}>
-              {type.label}
-            </SelectItem>
-          ))}
-        </Select>
-        <Input
-          type="date"
-          label="Vencimiento de Licencia"
-          placeholder="Seleccionar fecha"
-          labelPlacement="outside"
-          value={formData.license_expiry_date}
-          onChange={(e) => setFormData({...formData, license_expiry_date: e.target.value})}
-          required
+          onValueChange={(value) => setFormData({...formData, first_name: value})}
+          placeholder='Ingresar nombre'
+          errorMessage='Ingresa un nombre válido'
           isRequired
           classNames={{
-            base: "max-w-full",
-            label: "pb-1",
-            inputWrapper: "pb-0"
+            label: 'text-default-600 font-normal',
+            input: 'font-normal'
           }}
         />
         <Input
-          type="email"
-          label="Email"
-          labelPlacement="outside"
-          value={formData.email}
-          onChange={(e) => setFormData({...formData, email: e.target.value})}
-          classNames={commonClassNames}
+          label='Apellido'
+          name='last_name'
+          type='text'
+          variant='bordered'
+          labelPlacement='outside'
+          value={formData.last_name}
+          onValueChange={(value) => setFormData({...formData, last_name: value})}
+          placeholder='Ingresar apellido'
+          errorMessage='Ingresa un apellido válido'
+          isRequired
+          classNames={{
+            label: 'text-default-600 font-normal',
+            input: 'font-normal'
+          }}
         />
         <Input
-          label="Teléfono"
-          labelPlacement="outside"
-          value={formData.phone}
-          onChange={(e) => setFormData({...formData, phone: e.target.value})}
-          classNames={commonClassNames}
+          label='DNI'
+          name='dni'
+          type='text'
+          variant='bordered'
+          labelPlacement='outside'
+          value={formData.dni}
+          onValueChange={(value) => setFormData({...formData, dni: value})}
+          placeholder='Ingresar DNI'
+          errorMessage='Ingresa un DNI válido'
+          isRequired
+          classNames={{
+            label: 'text-default-600 font-normal',
+            input: 'font-normal'
+          }}
+        />
+      </div>
+      
+      <div className='flex flex-col gap-3 md:flex-row md:justify-between md:pb-3'>
+        <Input
+          label='Número de Licencia'
+          name='license_number'
+          type='text'
+          variant='bordered'
+          labelPlacement='outside'
+          value={formData.license_number}
+          onValueChange={(value) => setFormData({...formData, license_number: value})}
+          placeholder='Ingresar número de licencia'
+          errorMessage='Ingresa un número de licencia válido'
+          isRequired
+          classNames={{
+            label: 'text-default-600 font-normal',
+            input: 'font-normal'
+          }}
         />
         <Select
-          label="Departamento"
-          labelPlacement="outside"
-          value={formData.department}
-          onChange={(e) => setFormData({...formData, department: e.target.value})}
-          required
+          label='Tipo de Licencia'
+          name='license_type'
+          variant='bordered'
+          labelPlacement='outside'
+          placeholder='Seleccionar tipo de licencia'
+          selectedKeys={formData.license_type ? [formData.license_type] : []}
+          onChange={(e) => setFormData({...formData, license_type: e.target.value})}
           isRequired
-          classNames={commonClassNames}
+          classNames={{
+            label: 'text-default-600 font-normal',
+            trigger: 'h-12'
+          }}
+        >
+          {licenseTypes.map((type) => (
+            <SelectItem key={type.key} value={type.key}>
+              {type.label}
+            </SelectItem>
+          ))}
+        </Select>
+        <Input
+          type='date'
+          label='Vencimiento de Licencia'
+          name='license_expiry_date'
+          variant='bordered'
+          labelPlacement='outside'
+          placeholder='Seleccionar fecha'
+          value={formData.license_expiry_date}
+          onChange={(e) => setFormData({...formData, license_expiry_date: e.target.value})}
+          isRequired
+          classNames={{
+            label: 'text-default-600 font-normal',
+            input: 'font-normal'
+          }}
+        />
+      </div>
+
+      <div className='flex flex-col gap-3 md:flex-row md:justify-between md:pb-3'>
+        <Input
+          type='email'
+          label='Email'
+          name='email'
+          variant='bordered'
+          labelPlacement='outside'
+          value={formData.email}
+          onValueChange={(value) => setFormData({...formData, email: value})}
+          placeholder='Ingresar email'
+          classNames={{
+            label: 'text-default-600 font-normal',
+            input: 'font-normal'
+          }}
+        />
+        <Input
+          label='Teléfono'
+          name='phone'
+          type='text'
+          variant='bordered'
+          labelPlacement='outside'
+          value={formData.phone}
+          onValueChange={(value) => setFormData({...formData, phone: value})}
+          placeholder='Ingresar teléfono'
+          classNames={{
+            label: 'text-default-600 font-normal',
+            input: 'font-normal'
+          }}
+        />
+        <Select
+          label='Departamento'
+          name='department'
+          variant='bordered'
+          labelPlacement='outside'
+          placeholder='Seleccionar departamento'
+          selectedKeys={formData.department ? [formData.department] : []}
+          onChange={(e) => setFormData({...formData, department: e.target.value})}
+          isRequired
+          classNames={{
+            label: 'text-default-600 font-normal',
+            trigger: 'h-12'
+          }}
         >
           {departments.map((dept) => (
             <SelectItem key={dept.key} value={dept.key}>
@@ -185,14 +220,22 @@ export function EmployeeForm({
             </SelectItem>
           ))}
         </Select>
+      </div>
+
+      <div className='flex flex-col gap-3 md:flex-row md:justify-between md:pb-3'>
         <Select
-          label="Cargo"
-          labelPlacement="outside"
-          value={formData.position}
+          label='Cargo'
+          name='position'
+          variant='bordered'
+          labelPlacement='outside'
+          placeholder='Seleccionar cargo'
+          selectedKeys={formData.position ? [formData.position] : []}
           onChange={(e) => setFormData({...formData, position: e.target.value})}
-          required
           isRequired
-          classNames={commonClassNames}
+          classNames={{
+            label: 'text-default-600 font-normal',
+            trigger: 'h-12'
+          }}
         >
           {positions.map((pos) => (
             <SelectItem key={pos.key} value={pos.key}>
@@ -201,69 +244,81 @@ export function EmployeeForm({
           ))}
         </Select>
         <Select
-          label="Estado"
-          labelPlacement="outside"
-          value={formData.status}
+          label='Estado'
+          name='status'
+          variant='bordered'
+          labelPlacement='outside'
+          placeholder='Seleccionar estado'
+          selectedKeys={[formData.status]}
           onChange={(e) => setFormData({...formData, status: e.target.value})}
-          required
           isRequired
-          classNames={commonClassNames}
+          classNames={{
+            label: 'text-default-600 font-normal',
+            trigger: 'h-12'
+          }}
         >
-          <SelectItem key="Activo" value="Activo">Activo</SelectItem>
-          <SelectItem key="Inactivo" value="Inactivo">Inactivo</SelectItem>
-          <SelectItem key="Licencia" value="Licencia">Licencia</SelectItem>
+          <SelectItem key='Activo' value='Activo'>Activo</SelectItem>
+          <SelectItem key='Inactivo' value='Inactivo'>Inactivo</SelectItem>
+          <SelectItem key='Licencia' value='Licencia'>Licencia</SelectItem>
         </Select>
         <Input
-          label="URL de Foto"
-          labelPlacement="outside"
+          label='URL de Foto'
+          name='photo_url'
+          type='text'
+          variant='bordered'
+          labelPlacement='outside'
           value={formData.photo_url}
-          onChange={(e) => setFormData({...formData, photo_url: e.target.value})}
-          classNames={commonClassNames}
+          onValueChange={(value) => setFormData({...formData, photo_url: value})}
+          placeholder='Ingresar URL de la foto'
+          classNames={{
+            label: 'text-default-600 font-normal',
+            input: 'font-normal'
+          }}
         />
       </div>
 
-      <div className="flex items-end justify-end">
-        <div className="ml-2 flex flex-col gap-1 md:flex-row">
+      <div className='flex items-end justify-end'>
+        <div className='ml-2 flex flex-col gap-1 md:flex-row'>
           <Button
-            size="sm"
-            color="success"
-            variant="bordered"
-            type="submit"
+            size='sm'
+            color='success'
+            variant='bordered'
+            type='submit'
             endContent={
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
                 strokeWidth={1.5}
-                stroke="currentColor"
-                className="h-6 w-6"
+                stroke='currentColor'
+                className='h-6 w-6'
               >
                 <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m4.5 12.75 6 6 9-13.5"
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='m4.5 12.75 6 6 9-13.5'
                 />
               </svg>
             }
           />
           <Button
-            size="sm"
-            color="danger"
-            variant="bordered"
+            size='sm'
+            color='danger'
+            variant='bordered'
             onClick={onCancel}
             endContent={
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
                 strokeWidth={1.5}
-                stroke="currentColor"
-                className="h-6 w-6"
+                stroke='currentColor'
+                className='h-6 w-6'
               >
                 <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18 18 6M6 6l12 12"
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M6 18 18 6M6 6l12 12'
                 />
               </svg>
             }
