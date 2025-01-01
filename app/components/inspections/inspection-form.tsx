@@ -140,7 +140,7 @@ export const InspectionForm = ({
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="flex flex-col">
             <Input
-              type="datetime-loca l"
+              type="datetime-local"
               label="Fecha y Hora"
               name="inspection_date"
               variant="bordered"
