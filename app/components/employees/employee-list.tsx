@@ -74,10 +74,8 @@ export function EmployeeList({
             transition={{ duration: 0.5, ease: [0.04, 0.62, 0.23, 0.98] }}
           >
             <EmployeeForm 
-              onSubmit={() => {
-                setActiveForm(false);
-              }}
-              onCancel={() => setActiveForm(false)}
+              setActiveForm={setActiveForm}
+              searchParams={searchParams}
             />
           </motion.section>
         )}

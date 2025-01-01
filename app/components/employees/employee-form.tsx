@@ -319,6 +319,7 @@ export function EmployeeForm({ setActiveForm, searchParams }: EmployeeFormProps)
         />
       </div>
 
+      {/* Botones de acción */}
       <div className="mt-6 flex items-end justify-end">
         <div className="ml-2 flex flex-col gap-1 md:flex-row">
           <Button
@@ -328,34 +329,12 @@ export function EmployeeForm({ setActiveForm, searchParams }: EmployeeFormProps)
             type="submit"
             isLoading={loading}
             isDisabled={loading}
-            endContent={
-              !loading && (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="h-6 w-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m4.5 12.75 6 6 9-13.5"
-                  />
-                </svg>
-              )
-            }
-          />
-          <Button
-            size="sm"
-            color="danger"
-            variant="bordered"
             onClick={() => {
-              setTrySubmit(false);
-              setActiveForm(false);
+              setTrySubmit(true);
             }}
-            endContent={
+            aria-label="Guardar"
+          >
+            {!loading && (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -367,13 +346,39 @@ export function EmployeeForm({ setActiveForm, searchParams }: EmployeeFormProps)
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M6 18 18 6M6 6l12 12"
+                  d="m4.5 12.75 6 6 9-13.5"
                 />
               </svg>
-            }
-          />
+            )}
+          </Button>
+          <Button
+            size="sm"
+            color="danger"
+            variant="bordered"
+            onClick={() => {
+              setTrySubmit(false);
+              setActiveForm(false);
+            }}
+            aria-label="Cancelar"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="h-6 w-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+              />
+            </svg>
+          </Button>
         </div>
       </div>
     </form>
   );
 }
+
