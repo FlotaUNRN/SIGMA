@@ -49,172 +49,266 @@ export function EmployeeEditForm({ employee, onClose, onSuccess }: EmployeeEditF
     }
   };
 
-  const commonInputClasses = {
-    label: 'text-default-600 font-normal mb-1',
-    input: 'font-normal',
-    base: 'mb-3'
-  };
-
-  const commonSelectClasses = {
-    label: 'text-default-600 font-normal mb-1',
-    trigger: 'h-11',
-    base: 'mb-3'
-  };
-
   return (
-    <form onSubmit={handleSubmit} className='space-y-6 rounded-lg bg-lightPaper p-6 shadow-xl dark:bg-darkPaper'>
-      <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
-        <Input
-          label='Nombre'
-          value={formData.first_name}
-          onChange={(e) => setFormData({...formData, first_name: e.target.value})}
-          required
-          variant='bordered'
-          labelPlacement='outside'
-          classNames={commonInputClasses}
-        />
+    <form onSubmit={handleSubmit} className="mt-2 rounded-lg bg-lightPaper p-6 shadow-xl dark:bg-darkPaper">
+      <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <Input
+            label="Nombre"
+            name="first_name"
+            value={formData.first_name}
+            onChange={(e) => setFormData({...formData, first_name: e.target.value})}
+            variant="bordered"
+            labelPlacement="outside"
+            placeholder=" "
+            isRequired
+            classNames={{
+              label: 'text-default-600 font-normal',
+              input: 'font-normal'
+            }}
+          />
 
-        <Input
-          label='Apellido'
-          value={formData.last_name}
-          onChange={(e) => setFormData({...formData, last_name: e.target.value})}
-          required
-          variant='bordered'
-          labelPlacement='outside'
-          classNames={commonInputClasses}
-        />
+          <Input
+            label="Apellido"
+            name="last_name"
+            value={formData.last_name}
+            onChange={(e) => setFormData({...formData, last_name: e.target.value})}
+            variant="bordered"
+            labelPlacement="outside"
+            placeholder=" "
+            isRequired
+            classNames={{
+              label: 'text-default-600 font-normal',
+              input: 'font-normal'
+            }}
+          />
 
-        <Input
-          label='DNI'
-          value={formData.dni}
-          onChange={(e) => setFormData({...formData, dni: e.target.value})}
-          required
-          variant='bordered'
-          labelPlacement='outside'
-          classNames={commonInputClasses}
-        />
+          <Input
+            label="DNI"
+            name="dni"
+            value={formData.dni}
+            onChange={(e) => setFormData({...formData, dni: e.target.value})}
+            variant="bordered"
+            labelPlacement="outside"
+            placeholder=" "
+            isRequired
+            classNames={{
+              label: 'text-default-600 font-normal',
+              input: 'font-normal'
+            }}
+          />
+        </div>
 
-        <Input
-          label='Número de Licencia'
-          value={formData.license_number}
-          onChange={(e) => setFormData({...formData, license_number: e.target.value})}
-          required
-          variant='bordered'
-          labelPlacement='outside'
-          classNames={commonInputClasses}
-        />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <Input
+            label="Número de Licencia"
+            name="license_number"
+            value={formData.license_number}
+            onChange={(e) => setFormData({...formData, license_number: e.target.value})}
+            variant="bordered"
+            labelPlacement="outside"
+            placeholder=" "
+            isRequired
+            classNames={{
+              label: 'text-default-600 font-normal',
+              input: 'font-normal'
+            }}
+          />
 
-        <Select
-          label='Tipo de Licencia'
-          selectedKeys={[formData.license_type]}
-          onChange={(e) => setFormData({...formData, license_type: e.target.value})}
-          required
-          variant='bordered'
-          labelPlacement='outside'
-          classNames={commonSelectClasses}
-        >
-          {licenseTypes.map((type) => (
-            <SelectItem key={type} value={type}>
-              Clase {type}
-            </SelectItem>
-          ))}
-        </Select>
+          <Select
+            label="Tipo de Licencia"
+            name="license_type"
+            selectedKeys={[formData.license_type]}
+            onChange={(e) => setFormData({...formData, license_type: e.target.value})}
+            variant="bordered"
+            labelPlacement="outside"
+            placeholder="Seleccionar tipo"
+            isRequired
+            classNames={{
+              label: 'text-default-600 font-normal',
+              value: 'font-normal'
+            }}
+          >
+            {licenseTypes.map((type) => (
+              <SelectItem key={type} value={type}>
+                Clase {type}
+              </SelectItem>
+            ))}
+          </Select>
 
-        <Input
-          type='date'
-          label='Vencimiento de Licencia'
-          value={formData.license_expiry_date}
-          onChange={(e) => setFormData({...formData, license_expiry_date: e.target.value})}
-          required
-          variant='bordered'
-          labelPlacement='outside'
-          classNames={commonInputClasses}
-        />
+          <Input
+            type="date"
+            label="Vencimiento de Licencia"
+            name="license_expiry_date"
+            value={formData.license_expiry_date}
+            onChange={(e) => setFormData({...formData, license_expiry_date: e.target.value})}
+            variant="bordered"
+            labelPlacement="outside"
+            isRequired
+            classNames={{
+              label: 'text-default-600 font-normal',
+              input: 'font-normal'
+            }}
+          />
+        </div>
 
-        <Input
-          type='email'
-          label='Email'
-          value={formData.email}
-          onChange={(e) => setFormData({...formData, email: e.target.value})}
-          variant='bordered'
-          labelPlacement='outside'
-          classNames={commonInputClasses}
-        />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <Input
+            type="email"
+            label="Email"
+            name="email"
+            value={formData.email}
+            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            variant="bordered"
+            labelPlacement="outside"
+            placeholder=" "
+            classNames={{
+              label: 'text-default-600 font-normal',
+              input: 'font-normal'
+            }}
+          />
 
-        <Input
-          label='Teléfono'
-          value={formData.phone}
-          onChange={(e) => setFormData({...formData, phone: e.target.value})}
-          variant='bordered'
-          labelPlacement='outside'
-          classNames={commonInputClasses}
-        />
+          <Input
+            label="Teléfono"
+            name="phone"
+            value={formData.phone}
+            onChange={(e) => setFormData({...formData, phone: e.target.value})}
+            variant="bordered"
+            labelPlacement="outside"
+            placeholder=" "
+            classNames={{
+              label: 'text-default-600 font-normal',
+              input: 'font-normal'
+            }}
+          />
 
-        <Select
-          label='Departamento'
-          selectedKeys={[formData.department]}
-          onChange={(e) => setFormData({...formData, department: e.target.value})}
-          required
-          variant='bordered'
-          labelPlacement='outside'
-          classNames={commonSelectClasses}
-        >
-          {departments.map((dept) => (
-            <SelectItem key={dept} value={dept}>
-              {dept}
-            </SelectItem>
-          ))}
-        </Select>
+          <Input
+            label="URL de Foto"
+            name="photo_url"
+            value={formData.photo_url}
+            onChange={(e) => setFormData({...formData, photo_url: e.target.value})}
+            variant="bordered"
+            labelPlacement="outside"
+            placeholder=" "
+            classNames={{
+              label: 'text-default-600 font-normal',
+              input: 'font-normal'
+            }}
+          />
+        </div>
 
-        <Select
-          label='Cargo'
-          selectedKeys={[formData.position]}
-          onChange={(e) => setFormData({...formData, position: e.target.value})}
-          required
-          variant='bordered'
-          labelPlacement='outside'
-          classNames={commonSelectClasses}
-        >
-          {positions.map((pos) => (
-            <SelectItem key={pos} value={pos}>
-              {pos}
-            </SelectItem>
-          ))}
-        </Select>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <Select
+            label="Departamento"
+            name="department"
+            selectedKeys={[formData.department]}
+            onChange={(e) => setFormData({...formData, department: e.target.value})}
+            variant="bordered"
+            labelPlacement="outside"
+            placeholder="Seleccionar departamento"
+            isRequired
+            classNames={{
+              label: 'text-default-600 font-normal',
+              value: 'font-normal'
+            }}
+          >
+            {departments.map((dept) => (
+              <SelectItem key={dept} value={dept}>
+                {dept}
+              </SelectItem>
+            ))}
+          </Select>
 
-        <Select
-          label='Estado'
-          selectedKeys={[formData.status]}
-          onChange={(e) => setFormData({...formData, status: e.target.value as Employee['status']})}
-          required
-          variant='bordered'
-          labelPlacement='outside'
-          classNames={commonSelectClasses}
-        >
-          <SelectItem key='Activo' value='Activo'>Activo</SelectItem>
-          <SelectItem key='Inactivo' value='Inactivo'>Inactivo</SelectItem>
-          <SelectItem key='Licencia' value='Licencia'>Licencia</SelectItem>
-        </Select>
+          <Select
+            label="Cargo"
+            name="position"
+            selectedKeys={[formData.position]}
+            onChange={(e) => setFormData({...formData, position: e.target.value})}
+            variant="bordered"
+            labelPlacement="outside"
+            placeholder="Seleccionar cargo"
+            isRequired
+            classNames={{
+              label: 'text-default-600 font-normal',
+              value: 'font-normal'
+            }}
+          >
+            {positions.map((pos) => (
+              <SelectItem key={pos} value={pos}>
+                {pos}
+              </SelectItem>
+            ))}
+          </Select>
 
-        <Input
-          label='URL de Foto'
-          value={formData.photo_url}
-          onChange={(e) => setFormData({...formData, photo_url: e.target.value})}
-          variant='bordered'
-          labelPlacement='outside'
-          classNames={commonInputClasses}
-        />
+          <Select
+            label="Estado"
+            name="status"
+            selectedKeys={[formData.status]}
+            onChange={(e) => setFormData({...formData, status: e.target.value as Employee['status']})}
+            variant="bordered"
+            labelPlacement="outside"
+            placeholder="Seleccionar estado"
+            isRequired
+            classNames={{
+              label: 'text-default-600 font-normal',
+              value: 'font-normal'
+            }}
+          >
+            <SelectItem key="Activo" value="Activo">Activo</SelectItem>
+            <SelectItem key="Inactivo" value="Inactivo">Inactivo</SelectItem>
+            <SelectItem key="Licencia" value="Licencia">Licencia</SelectItem>
+          </Select>
+        </div>
       </div>
 
-      <div className='flex justify-end gap-3 pt-4'>
-        <Button color='danger' variant='light' onClick={onClose}>
-          Cancelar
-        </Button>
-        <Button color='success' type='submit'>
-          Guardar Cambios
-        </Button>
+      <div className="flex items-end justify-end pt-6">
+        <div className="ml-2 flex flex-col gap-1 md:flex-row">
+          <Button
+            size="sm"
+            color="success"
+            variant="bordered"
+            type="submit"
+            endContent={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="h-6 w-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m4.5 12.75 6 6 9-13.5"
+                />
+              </svg>
+            }
+          />
+          <Button
+            size="sm"
+            color="danger"
+            variant="bordered"
+            onClick={onClose}
+            endContent={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="h-6 w-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18 18 6M6 6l12 12"
+                />
+              </svg>
+            }
+          />
+        </div>
       </div>
     </form>
   );
 }
-

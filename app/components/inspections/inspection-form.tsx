@@ -131,7 +131,6 @@ export const InspectionForm = ({
 
   const commonSelectClasses = {
     label: 'text-default-600 font-normal',
-    trigger: 'h-12'
   };
 
   return (
@@ -139,62 +138,66 @@ export const InspectionForm = ({
       <div className="grid grid-cols-1 gap-6">
         {/* Información básica */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <Input
-            type="datetime-local"
-            label="Fecha y Hora"
-            name="inspection_date"
-            variant="bordered"
-            labelPlacement="outside"
-            placeholder="Seleccionar fecha y hora"
-            value={formData.inspection_date}
-            onValueChange={(value) => {
-              setFormData({ ...formData, inspection_date: value });
-              if (trySubmit) validateDate(value);
-            }}
-            isRequired
-            isInvalid={trySubmit && dateError}
-            errorMessage={dateError ? 'Ingrese una fecha válida' : ''}
-            description="Ingrese la fecha y hora de la inspección"
-            classNames={commonInputClasses}
-          />
+          <div className="flex flex-col">
+            <Input
+              type="datetime-loca l"
+              label="Fecha y Hora"
+              name="inspection_date"
+              variant="bordered"
+              labelPlacement="outside"
+              placeholder="Seleccionar fecha y hora"
+              value={formData.inspection_date}
+              onValueChange={(value) => {
+                setFormData({ ...formData, inspection_date: value });
+                if (trySubmit) validateDate(value);
+              }}
+              isRequired
+              isInvalid={trySubmit && dateError}
+              errorMessage={dateError ? 'Ingrese una fecha válida' : ''}
+              classNames={commonInputClasses}
+            />
+          </div>
 
-          <Input
-            label="Lectura del Odómetro"
-            name="odometer_reading"
-            type="number"
-            variant="bordered"
-            labelPlacement="outside"
-            value={formData.odometer_reading}
-            onValueChange={(value) => {
-              setFormData({ ...formData, odometer_reading: value });
-              if (trySubmit) validateOdometer(value);
-            }}
-            placeholder="Ej: 50000"
-            isRequired
-            isInvalid={trySubmit && odometerError}
-            errorMessage={odometerError ? 'Ingrese un kilometraje válido' : ''}
-            description="Ingrese el kilometraje actual del vehículo"
-            endContent={<div className="pointer-events-none text-default-400 text-small">km</div>}
-            classNames={commonInputClasses}
-          />
+          <div className="flex flex-col">
+            <Input
+              label="Lectura del Odómetro"
+              name="odometer_reading"
+              type="number"
+              variant="bordered"
+              labelPlacement="outside"
+              value={formData.odometer_reading}
+              onValueChange={(value) => {
+                setFormData({ ...formData, odometer_reading: value });
+                if (trySubmit) validateOdometer(value);
+              }}
+              placeholder="Ej: 50000"
+              isRequired
+              isInvalid={trySubmit && odometerError}
+              errorMessage={odometerError ? 'Ingrese un kilometraje válido' : ''}
+              endContent={<div className="pointer-events-none text-default-400 text-small">km</div>}
+              classNames={commonInputClasses}
+            />
+          </div>
 
-          <Select
-            label="Estado"
-            name="status"
-            variant="bordered"
-            labelPlacement="outside"
-            placeholder="Seleccionar estado"
-            selectedKeys={[formData.status]}
-            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-            isRequired
-            classNames={commonSelectClasses}
-          >
-            {statusOptions.map((status) => (
-              <SelectItem key={status} value={status}>
-                {status}
-              </SelectItem>
-            ))}
-          </Select>
+          <div className="flex flex-col">
+            <Select
+              label="Estado"
+              name="status"
+              variant="bordered"
+              labelPlacement="outside"
+              placeholder="Seleccionar estado"
+              selectedKeys={[formData.status]}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+              isRequired
+              classNames={commonSelectClasses}
+            >
+              {statusOptions.map((status) => (
+                <SelectItem key={status} value={status}>
+                  {status}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
         </div>
 
         {/* URLs de imágenes */}
@@ -207,18 +210,19 @@ export const InspectionForm = ({
               { key: 'passenger_side_image_url', label: 'Imagen Lateral Pasajero' },
               { key: 'back_image_url', label: 'Imagen Trasera' }
             ].map(({ key, label }) => (
-              <Input
-                key={key}
-                label={label}
-                name={key}
-                type="text"
-                variant="bordered"
-                labelPlacement="outside"
-                placeholder={`URL de la ${label.toLowerCase()}`}
-                value={formData[key as keyof typeof formData] as string}
-                onValueChange={(value) => setFormData({ ...formData, [key]: value })}
-                classNames={commonInputClasses}
-              />
+              <div key={key} className="flex flex-col">
+                <Input
+                  label={label}
+                  name={key}
+                  type="text"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  placeholder={`URL de la ${label.toLowerCase()}`}
+                  value={formData[key as keyof typeof formData] as string}
+                  onValueChange={(value) => setFormData({ ...formData, [key]: value })}
+                  classNames={commonInputClasses}
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -236,24 +240,25 @@ export const InspectionForm = ({
               { key: 'power_steering_status', label: 'Dirección Hidráulica' },
               { key: 'wiper_fluid_status', label: 'Limpiaparabrisas' }
             ].map(({ key, label }) => (
-              <Select
-                key={key}
-                label={label}
-                name={key}
-                variant="bordered"
-                labelPlacement="outside"
-                placeholder={`Seleccionar estado de ${label.toLowerCase()}`}
-                selectedKeys={[formData[key as keyof typeof formData] as string]}
-                onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                isRequired
-                classNames={commonSelectClasses}
-              >
-                {fluidStatusOptions.map((status) => (
-                  <SelectItem key={status} value={status}>
-                    {status}
-                  </SelectItem>
-                ))}
-              </Select>
+              <div key={key} className="flex flex-col">
+                <Select
+                  label={label}
+                  name={key}
+                  variant="bordered"
+                  labelPlacement="outside"
+                  placeholder={'Seleccionar estado'}
+                  selectedKeys={[formData[key as keyof typeof formData] as string]}
+                  onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
+                  isRequired
+                  classNames={commonSelectClasses}
+                >
+                  {fluidStatusOptions.map((status) => (
+                    <SelectItem key={status} value={status}>
+                      {status}
+                    </SelectItem>
+                  ))}
+                </Select>
+              </div>
             ))}
           </div>
         </div>
@@ -268,24 +273,25 @@ export const InspectionForm = ({
               { key: 'serpentine_belt_status', label: 'Correa Serpentina' },
               { key: 'alternator_belt_status', label: 'Correa del Alternador' }
             ].map(({ key, label }) => (
-              <Select
-                key={key}
-                label={label}
-                name={key}
-                variant="bordered"
-                labelPlacement="outside"
-                placeholder={`Seleccionar estado de ${label.toLowerCase()}`}
-                selectedKeys={[formData[key as keyof typeof formData] as string]}
-                onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                isRequired
-                classNames={commonSelectClasses}
-              >
-                {componentStatusOptions.map((status) => (
-                  <SelectItem key={status} value={status}>
-                    {status}
-                  </SelectItem>
-                ))}
-              </Select>
+              <div key={key} className="flex flex-col">
+                <Select
+                  label={label}
+                  name={key}
+                  variant="bordered"
+                  labelPlacement="outside"
+                  placeholder={'Seleccionar estado'}
+                  selectedKeys={[formData[key as keyof typeof formData] as string]}
+                  onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
+                  isRequired
+                  classNames={commonSelectClasses}
+                >
+                  {componentStatusOptions.map((status) => (
+                    <SelectItem key={status} value={status}>
+                      {status}
+                    </SelectItem>
+                  ))}
+                </Select>
+              </div>
             ))}
           </div>
         </div>
@@ -299,24 +305,25 @@ export const InspectionForm = ({
               { key: 'fuel_filter_status', label: 'Filtro de Combustible' },
               { key: 'oil_filter_status', label: 'Filtro de Aceite' }
             ].map(({ key, label }) => (
-              <Select
-                key={key}
-                label={label}
-                name={key}
-                variant="bordered"
-                labelPlacement="outside"
-                placeholder={`Seleccionar estado de ${label.toLowerCase()}`}
-                selectedKeys={[formData[key as keyof typeof formData] as string]}
-                onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                isRequired
-                classNames={commonSelectClasses}
-              >
-                {componentStatusOptions.map((status) => (
-                  <SelectItem key={status} value={status}>
-                    {status}
-                  </SelectItem>
-                ))}
-              </Select>
+              <div key={key} className="flex flex-col">
+                <Select
+                  label={label}
+                  name={key}
+                  variant="bordered"
+                  labelPlacement="outside"
+                  placeholder={'Seleccionar estado'}
+                  selectedKeys={[formData[key as keyof typeof formData] as string]}
+                  onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
+                  isRequired
+                  classNames={commonSelectClasses}
+                >
+                  {componentStatusOptions.map((status) => (
+                    <SelectItem key={status} value={status}>
+                      {status}
+                    </SelectItem>
+                  ))}
+                </Select>
+              </div>
             ))}
           </div>
         </div>
@@ -395,7 +402,6 @@ export const InspectionForm = ({
             value={formData.notes}
             onValueChange={(value) => setFormData({ ...formData, notes: value })}
             placeholder="Ingrese notas adicionales sobre la inspección"
-            description="Agregue cualquier observación relevante sobre la inspección"
             classNames={commonInputClasses}
           />
         </div>
